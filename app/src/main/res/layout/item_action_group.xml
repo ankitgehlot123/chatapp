@@ -1,0 +1,32 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="8dp"
+    android:layout_marginTop="8dp"
+    android:gravity="start"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/chat_action_back"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/spacing">
+
+        <com.company.my.chatapp.typingIndicator.TypingIndicatorView
+            android:id="@+id/typing_indicator_view01"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp" />
+        <TextView
+            android:id="@+id/username"
+            style="?android:textAppearanceMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|bottom"
+            android:singleLine="true"
+            android:textSize="14dp"
+            android:textStyle="bold"/>
+    </LinearLayout>
+</LinearLayout>

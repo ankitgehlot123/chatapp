@@ -1,0 +1,77 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@drawable/top_round_contentback"
+    tools:context=".MainFragment">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/messages"
+        android:layout_width="match_parent"
+        android:paddingTop="20dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scrollbarStyle="outsideOverlay"
+        android:scrollbars="vertical" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginTop="2dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_grad"
+            android:layout_gravity="start|center_vertical"
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            android:paddingLeft="2dp"
+            android:paddingTop="2dp"
+            android:paddingRight="2dp"
+            android:paddingBottom="2dp">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbarSize="1dp"
+                android:scrollbars="vertical">
+
+                <EditText
+                    android:id="@+id/message_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_white"
+                    android:hint="@string/prompt_message"
+                    android:maxHeight="100dp"
+                    android:minHeight="40dp"
+                    android:imeActionId="@+id/send"
+                    android:imeActionLabel="@string/action_send"
+                    android:imeOptions="actionSend"
+                    android:inputType="text|textMultiLine|textImeMultiLine"
+                    android:padding="2dp"
+                    android:singleLine="false" />
+            </ScrollView>
+
+        </LinearLayout>
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_weight="0.05"
+            android:layout_height="40dp"
+            android:id="@+id/send_button"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            app:srcCompat="@drawable/ic_send_black_24dp"
+            android:background="@drawable/circle_back_send"
+            android:layout_gravity="end|center_vertical"
+            android:contentDescription="TODO" />
+    </LinearLayout>
+
+</LinearLayout>
