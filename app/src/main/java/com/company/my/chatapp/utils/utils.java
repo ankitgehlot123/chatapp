@@ -35,8 +35,8 @@ import java.util.ArrayList;
 
 public class utils extends Activity {
 
-    static public String url = "http://192.168.43.81:1880/";
-    static public String profile_url = "http://192.168.43.81:1880/ChatApp?pic=";
+    static public String url = "http://192.168.43.157:1880/";
+    static public String profile_url = "http://192.168.43.157:1880/ChatApp?pic=";
 
     // Create the default Stitch Client
     static public StitchAppClient client = Stitch.getAppClient("chatapp-acbgk");
@@ -62,6 +62,14 @@ public class utils extends Activity {
         editor.putString(name, value);
         editor.commit();
     }
+    public static void clearShared(Context context) {
+        SharedPreferences prefs = PreferenceManager
+                .getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.clear();
+        editor.commit();
+    }
+
 
     public static String getShared(Context context, String name, String defaultValue) {
         SharedPreferences prefs = PreferenceManager

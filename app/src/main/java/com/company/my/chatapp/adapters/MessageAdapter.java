@@ -19,6 +19,14 @@ import com.company.my.chatapp.imageFullscreen;
 import com.company.my.chatapp.modal.Message;
 
 import java.io.ByteArrayOutputStream;
+
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.common.RotationOptions;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
+
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -29,6 +37,7 @@ import java.util.List;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
     Context context;
+    int is_image=0;
     private List<Message> mMessages;
     private int[] mUsernameColors;
 
@@ -44,11 +53,19 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         int layout = -1;
         switch (viewType) {
             case Message.TYPE_MESSAGE_SENDER:
-                layout = R.layout.item_message_sender;
+                    layout = R.layout.item_message_sender;
                 Log.i("Ankitlayout", "R.layout.item_message_sender");
                 break;
             case Message.TYPE_MESSAGE_RECEIVER:
-                layout = R.layout.item_message_receiver;
+                    layout = R.layout.item_message_receiver;
+                Log.i("Ankitlayout", "R.layout.item_message_receiver");
+                break;
+            case Message.TYPE_MESSAGE_IMAGE_SENDER:
+                layout = R.layout.item_message_image_sender;
+                Log.i("Ankitlayout", "R.layout.item_message_sender");
+                break;
+            case Message.TYPE_MESSAGE_IMAGE_RECEIVER:
+                layout = R.layout.item_message_image_receiver;
                 Log.i("Ankitlayout", "R.layout.item_message_receiver");
                 break;
             case Message.TYPE_LOG:
@@ -72,7 +89,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         viewHolder.setMessage(message.getMessage());
         viewHolder.setUsername(message.getUsername());
         try {
-            viewHolder.setImage(message.getImage());
+              viewHolder.setImage(message.getImage());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -93,7 +110,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView mUsernameView;
         private TextView mMessageView;
-        private ImageView mImageView;
+        private SimpleDraweeView mImageView;
         private TextView mTimeStamp;
 
 
@@ -110,6 +127,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         public void setImage(final Uri uri) throws IOException {
             if (null == mImageView) return;
             if (null == uri) return;
+            is_image=1;
             mImageView.setVisibility(View.VISIBLE);
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             mImageView.setOnClickListener(new View.OnClickListener() {
@@ -124,9 +142,19 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         }
 
         private void setPic(Uri uri) {
+            ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
+                    .setProgressiveRenderingEnabled(true)
+                    .setRotationOptions(RotationOptions.autoRotate())
+                    .build();
+            DraweeController controller = Fresco.newDraweeControllerBuilder()
+                    .setImageRequest(request)
+                    .setOldController(mImageView.getController())
+                    .build();
+            mImageView.setController(controller);
+           // mImageView.setImageURI(uri);
             // Get the dimensions of the View
 
-
+          /*
             Log.i("ANKIT_URL", uri.toString() + "\n" + uri.getEncodedPath());
             ParcelFileDescriptor parcelFileDescriptor = null;
             try {
@@ -155,7 +183,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             bmOptions.inPurgeable = true;
             Bitmap b = BitmapFactory.decodeFileDescriptor(fileDescriptor, null, bmOptions);
             mImageView.setImageBitmap(b);
-
+            */
         }
 
         private void setUsername(String username) {

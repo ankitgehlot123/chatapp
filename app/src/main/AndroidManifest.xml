@@ -44,6 +44,8 @@
 
         <activity
             android:name=".update_profile" />
+        <activity
+            android:name=".profile" />
         <activity android:name=".MainActivity" />
         <activity android:name=".contactListUpdate" />
         <activity android:name=".contactList" />

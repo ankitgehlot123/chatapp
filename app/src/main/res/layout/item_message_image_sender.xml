@@ -1,7 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_marginTop="8dp"
     android:gravity="end"
     android:orientation="vertical">
@@ -13,36 +13,18 @@
         android:padding="4dp"
         android:background="@drawable/chat_sender_back"
         android:orientation="vertical">
-        <TextView
-            android:id="@+id/username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:singleLine="false"
-            android:textStyle="bold"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/message"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:autoLink="all"
-            android:maxWidth="150dp"
-            android:textColor="#FFFFFF"
-            android:visibility="gone" />
-
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/image"
             android:layout_width="130dp"
             android:layout_height="130dp"
-            android:adjustViewBounds="true"
             android:visibility="gone"
             fresco:failureImage="@drawable/ic_broken_image_black_24dp"
             fresco:actualImageScaleType="centerCrop"
             fresco:retryImage="@drawable/ic_refresh_black_24dp"
             android:layout_gravity="top|center_horizontal"
-            fresco:roundedCornerRadius="5dp"
             fresco:placeholderImage="@drawable/ic_insert_photo_black_24dp"
-            />
+            fresco:roundedCornerRadius="5dp" />
+
         <TextView
             android:id="@+id/time_stamp"
             android:layout_width="wrap_content"
@@ -51,9 +33,9 @@
             android:textSize="10sp"
             android:layout_marginTop="2dp"
             android:text="00:00" />
-    </LinearLayout>
+
+</LinearLayout>
         <!--show username in chatbubble by removing visibility tag-->
 
 
-    </LinearLayout>
-
+</LinearLayout>

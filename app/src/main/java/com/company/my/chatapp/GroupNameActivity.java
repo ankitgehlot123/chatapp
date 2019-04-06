@@ -37,7 +37,6 @@ public class GroupNameActivity extends Activity {
                 status = data.getString("status");
 
                 if (status.equals("true")) {
-                    Log.d("Check1111", "true");
                     Intent intent = new Intent();
                     intent.putExtra("username", session.getUsername());
                     intent.putExtra("room_id", groupName);

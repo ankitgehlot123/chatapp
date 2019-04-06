@@ -2,6 +2,7 @@ package com.company.my.chatapp;
 
 import android.app.Activity;
 import android.content.ClipData;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -13,6 +14,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
@@ -41,6 +43,7 @@ import com.company.my.chatapp.adapters.MessageAdapter;
 import com.company.my.chatapp.modal.Message;
 import com.company.my.chatapp.utils.Session;
 import com.company.my.chatapp.utils.utils;
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.model.UpdateOptions;
 
@@ -80,6 +83,7 @@ public class MainFragment extends Fragment {
     ActionBar actionBar;
     private static final String TAG = "MainFragment";
     static final int REQUEST_TAKE_PHOTO = 2;
+    private static  final String image_webhook="http://192.168.43.157:1880/getimage?url=";
     private static final int REQUEST_LOGIN = 0;
     private static final int TYPING_TIMER_LENGTH = 600;
     private RecyclerView mMessagesView;
@@ -114,8 +118,9 @@ public class MainFragment extends Fragment {
                             }
                             mSocket.emit("join_room", data);
                         }
-                        Toast.makeText(getActivity().getApplicationContext(),
-                                R.string.connect, Toast.LENGTH_LONG).show();
+                        Snackbar.make(getActivity().findViewById(R.id.main_fragment), R.string.connect,
+                                Snackbar.LENGTH_SHORT)
+                                .show();
                         isConnected = true;
                     }
                 }
@@ -130,8 +135,8 @@ public class MainFragment extends Fragment {
                 public void run() {
                     Log.i(TAG, "diconnected");
                     isConnected = false;
-                    Toast.makeText(getActivity().getApplicationContext(),
-                            R.string.disconnect, Toast.LENGTH_LONG).show();
+                    Snackbar.make(getActivity().findViewById(R.id.main_fragment),
+                            R.string.disconnect, Snackbar.LENGTH_SHORT).show();
                 }
             });
         }
@@ -143,8 +148,8 @@ public class MainFragment extends Fragment {
                 @Override
                 public void run() {
                     Log.e(TAG, "Error connecting");
-                    Toast.makeText(getActivity().getApplicationContext(),
-                            R.string.error_connect, Toast.LENGTH_LONG).show();
+                    Snackbar.make(getActivity().findViewById(R.id.main_fragment),
+                            R.string.error_connect, Snackbar.LENGTH_SHORT).show();
                 }
             });
         }
@@ -163,11 +168,11 @@ public class MainFragment extends Fragment {
                     try {
                         JSONObject jsonObject = data.getJSONObject("message");
                         Document updateDoc;
+                        Log.e("jsonkima",data.toString());
 
                         if(jsonObject.getString("type").equals("text")){
                             username = data.getString("username");
                             message = jsonObject.getString("message");
-
                             timestamp= stringToDate(jsonObject.getString("timestamp"));
                             removeTyping(username);
                             addMessage(username, message,1,timestamp);
@@ -181,41 +186,35 @@ public class MainFragment extends Fragment {
                             utils.chatCollection.updateOne(filter,updateDoc,updateOption);
                             Log.d("dataCheck",doc.toString());
                         } else {
+                            Log.e("imgOj",jsonObject.toString());
                             imageText = jsonObject.getString("message");
                             username = data.getString("username");
                             timestamp= stringToDate(jsonObject.getString("timestamp"));
-                            Log.i("AnkitRecieved1",jsonObject.getString("timestamp"));
-                            Bitmap bitmap=decodeImage(imageText);
-                            File file=createImageFile(1);
-                            FileOutputStream out = new FileOutputStream(file);
-                            bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
-                            out.flush();
-                            out.close();
-                            addImage(username, Uri.fromFile(file),1,2,timestamp);
+
+                            addImage(username,Uri.parse(image_webhook+imageText),4,2,timestamp);
+
                             //Update MsgQ
-                            jsonObject.put("trans_type","1");
+                            jsonObject.put("trans_type","4");
                             jsonObject.put("username",username);
                             JSONObject msgQ = new JSONObject().put("msgQ",jsonObject);
                             JSONObject doc = new JSONObject().put("$addToSet",msgQ);
                             updateDoc = Document.parse( jsonObject.toString());
+                            Log.e("docdoc",updateDoc.toString());
+                            //utils.chatCollection.updateOne(filter,updateDoc,updateOption);
                         }
 
                         //Update Recent Chat in Contact List
                         updateContactList();
                         //Delete the msgQ
-                        Log.e("abcd",data.toString());
                         if(data.has("type")){
                             JSONObject time = new JSONObject();
                             time.put("room",mRoomid);
                             time.put("timestamp",timestamp);
                             mSocket.emit("delete_msgQ", time);
-                            Log.e("ABCD","abcd");
                         }
                     } catch (JSONException e) {
                         Log.e(TAG, e.getMessage());
                         return;
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
                 }
             });
@@ -346,7 +345,7 @@ public class MainFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         setHasOptionsMenu(true);
-
+        Fresco.initialize(getContext());
         ChatApplication app = (ChatApplication) getActivity().getApplication();
         mSocket = app.getSocket();
         mSocket.on(Socket.EVENT_CONNECT,onConnect);
@@ -401,10 +400,10 @@ public class MainFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mMessagesView = (RecyclerView) view.findViewById(R.id.messages);
+        mMessagesView =  view.findViewById(R.id.messages);
         mMessagesView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mMessagesView.setAdapter(mAdapter);
-        mInputMessageView = (EditText) view.findViewById(R.id.message_input);
+        mInputMessageView = view.findViewById(R.id.message_input);
         mInputMessageView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int id, KeyEvent event) {
@@ -498,7 +497,7 @@ public class MainFragment extends Fragment {
                     e.printStackTrace();
                 }
                 Log.i("galleryImagePath",":"+selectedImage.toString());
-                sendImage(bitmap,selectedImage,0,0);
+                sendImage(bitmap,selectedImage,3,0);
             }
             //Camera result
             else{
@@ -509,7 +508,7 @@ public class MainFragment extends Fragment {
                     e.printStackTrace();
                 }
                 FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-                sendImage(BitmapFactory.decodeFileDescriptor(fileDescriptor),mCurrentPhotoPath,0,1);
+                sendImage(BitmapFactory.decodeFileDescriptor(fileDescriptor),mCurrentPhotoPath,3,1);
             }
         }
     }
@@ -527,23 +526,29 @@ public class MainFragment extends Fragment {
 
         }
     }
-    private void galleryAddPic(Uri contentUri) {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        mediaScanIntent.setData(contentUri);
-        getContext().sendBroadcast(mediaScanIntent);
+    private void galleryAddPic(Uri contentUri){
+
+            ContentValues values = new ContentValues();
+
+            values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
+            values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+            values.put(MediaStore.MediaColumns.DATA, contentUri.getPath());
+
+           getContext().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
     }
     private void addImage(String username, Uri uri, int trans_type, int source_type,Date timestamp){
 
         Log.i("ankit",uri.toString());
-        if(trans_type==0)
-            mMessages.add(new Message.Builder(Message.TYPE_MESSAGE_SENDER).username(username).timestamp(timestamp).image(uri).build());
-        else
-            mMessages.add(new Message.Builder(Message.TYPE_MESSAGE_RECEIVER).username(username).timestamp(timestamp).image(uri).build());
+        if(trans_type==3)
+            mMessages.add(new Message.Builder(Message.TYPE_MESSAGE_IMAGE_SENDER).username(username).timestamp(timestamp).image(uri).build());
+        else if(trans_type==4)
+            mMessages.add(new Message.Builder(Message.TYPE_MESSAGE_IMAGE_RECEIVER).username(username).timestamp(timestamp).image(uri).build());
         mAdapter = new MessageAdapter(getContext(),mMessages);
         mAdapter.notifyItemInserted(0);
         galleryAddPic(uri);
         scrollToBottom();
     }
+
     private String encodeImage(Bitmap bitmap)
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -596,7 +601,7 @@ public class MainFragment extends Fragment {
             // Create the File where the photo should go
             File photoFile = null;
             try {
-                photoFile = createImageFile(0);
+                photoFile =  createImageFile(0);
             } catch (IOException ex) {
                 // Error occurred while creating the File
                 Log.i("File Creation Error!",ex.getMessage());
@@ -657,7 +662,7 @@ public class MainFragment extends Fragment {
         if(trans_type==0)
             mMessages.add(new Message.Builder(Message.TYPE_MESSAGE_SENDER)
                     .username(username).message(message).timestamp(timestamp).build());
-        else{
+        else if(trans_type==1){
             mMessages.add(new Message.Builder(Message.TYPE_MESSAGE_RECEIVER)
                     .username(username).message(message).timestamp(timestamp).build());
         }

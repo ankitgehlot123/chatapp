@@ -6,9 +6,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/backdrop_login"
-    tools:context=".update_profile">
+    tools:context=".profile">
 
     <android.support.v7.widget.CardView
+        android:id="@+id/cardView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
@@ -25,15 +26,16 @@
             android:layout_height="100dp"
             android:contentDescription="Profile Pic"
             app:srcCompat="@drawable/avatar" />
+
         <ImageButton
             android:layout_width="100dp"
             android:layout_height="30dp"
-            android:textColor="@color/colorWhite"
-            android:gravity="center"
             android:layout_gravity="bottom"
-            android:src="@drawable/ic_edit_black_24dp"
+            android:background="#CC000000"
+            android:gravity="center"
             android:onClick="open_gallery"
-            android:background="#CC000000"/>
+            android:src="@drawable/ic_edit_black_24dp"
+            android:textColor="@color/colorWhite" />
     </android.support.v7.widget.CardView>
 
     <EditText
@@ -55,24 +57,39 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.373" />
 
-    <Button
-        android:id="@+id/update"
-        android:layout_width="150dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_margin="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/button_bg_round"
-        android:onClick="update"
-        android:text="Next"
-        android:textColor="#fff"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.527" />
+        app:layout_constraintTop_toBottomOf="@+id/user_name">
 
+        <Button
+            android:id="@+id/update"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#00000000"
+            android:onClick="update"
+            android:text="save"
+            android:textColor="#fff" />
+
+        <Button
+            android:id="@+id/logout_app"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#00000000"
+            android:onClick="logout"
+            android:text="Log Out"
+            android:textColor="#fff" />
+
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

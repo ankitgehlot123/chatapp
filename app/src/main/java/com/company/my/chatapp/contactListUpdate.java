@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -165,8 +166,7 @@ public class contactListUpdate extends AppCompatActivity {
                 Manifest.permission.READ_CONTACTS))
         {
 
-            Toast.makeText(contactListUpdate.this,"CONTACTS permission allows us to Access CONTACTS app", Toast.LENGTH_LONG).show();
-
+            Snackbar.make(findViewById(R.id.contact_list_update),"CONTACTS permission allows us to Access CONTACTS app",Snackbar.LENGTH_SHORT).show();
         } else {
 
             ActivityCompat.requestPermissions(this,new String[]{
@@ -188,12 +188,9 @@ public class contactListUpdate extends AppCompatActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    Toast.makeText(this,"Permission Granted, Now your application can access CONTACTS.", Toast.LENGTH_LONG).show();
-
+                    Snackbar.make(findViewById(R.id.contact_list_update),"Permission Granted, Now your application can access CONTACTS.",Snackbar.LENGTH_SHORT).show();
                 } else {
-
-                    Toast.makeText(this,"Permission Canceled, Now your application cannot access CONTACTS.", Toast.LENGTH_LONG).show();
-
+                    Snackbar.make(findViewById(R.id.contact_list_update),"Permission Canceled, Now your application cannot access CONTACTS.",Snackbar.LENGTH_SHORT).show();
                 }
                 break;
         }

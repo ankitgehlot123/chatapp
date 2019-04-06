@@ -18,6 +18,12 @@ import android.widget.TextView;
 import com.company.my.chatapp.R;
 import com.company.my.chatapp.imageFullscreen;
 import com.company.my.chatapp.modal.Message;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.common.RotationOptions;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileDescriptor;
@@ -50,6 +56,14 @@ public class MessageAdapterGroup extends RecyclerView.Adapter<MessageAdapterGrou
                 break;
             case Message.TYPE_MESSAGE_RECEIVER:
                 layout = R.layout.item_message_receiver;
+                Log.i("Ankitlayout", "R.layout.item_message_receiver");
+                break;
+            case Message.TYPE_MESSAGE_IMAGE_SENDER:
+                layout = R.layout.item_message_image_sender;
+                Log.i("Ankitlayout", "R.layout.item_message_sender");
+                break;
+            case Message.TYPE_MESSAGE_IMAGE_RECEIVER:
+                layout = R.layout.item_message_image_receiver;
                 Log.i("Ankitlayout", "R.layout.item_message_receiver");
                 break;
             case Message.TYPE_LOG:
@@ -94,7 +108,7 @@ public class MessageAdapterGroup extends RecyclerView.Adapter<MessageAdapterGrou
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView mUsernameView;
         private TextView mMessageView;
-        private ImageView mImageView;
+        private SimpleDraweeView mImageView;
         private TextView mTimeStamp;
 
 
@@ -125,10 +139,18 @@ public class MessageAdapterGroup extends RecyclerView.Adapter<MessageAdapterGrou
         }
 
         private void setPic(Uri uri) {
-            // Get the dimensions of the View
 
+            ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
+                    .setProgressiveRenderingEnabled(true)
+                    .setRotationOptions(RotationOptions.autoRotate())
+                    .build();
+            DraweeController controller = Fresco.newDraweeControllerBuilder()
+                    .setImageRequest(request)
+                    .setOldController(mImageView.getController())
+                    .build();
+            mImageView.setController(controller);
 
-            Log.i("ANKIT_URL", uri.toString() + "\n" + uri.getEncodedPath());
+           /* Log.i("ANKIT_URL", uri.toString() + "\n" + uri.getEncodedPath());
             ParcelFileDescriptor parcelFileDescriptor = null;
             try {
                 parcelFileDescriptor = context.getContentResolver().openFileDescriptor(uri, "r");
@@ -155,7 +177,7 @@ public class MessageAdapterGroup extends RecyclerView.Adapter<MessageAdapterGrou
             bmOptions.inSampleSize = scaleFactor;
             bmOptions.inPurgeable = true;
             Bitmap b = BitmapFactory.decodeFileDescriptor(fileDescriptor, null, bmOptions);
-            mImageView.setImageBitmap(b);
+            mImageView.setImageBitmap(b);*/
 
         }
 

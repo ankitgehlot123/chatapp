@@ -37,5 +37,6 @@
     <string name="capture">capture</string>
     <string name="gallary">gallary</string>
     <string name="title_appbar_style">bold</string>
+    <string name="change">Change</string>
 
 </resources>

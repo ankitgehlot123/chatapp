@@ -34,7 +34,7 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/user" />
+                    android:src="@drawable/avatar" />
 
             </android.support.v7.widget.CardView>
 

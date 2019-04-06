@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.KeyEvent;
@@ -101,7 +102,8 @@ public class otp_layout extends Activity {
                 }
             });
         } else
-            Toast.makeText(otp_layout.this, "No Connection", Toast.LENGTH_SHORT).show();
+
+        Snackbar.make(findViewById(R.id.otp_parent) ,"No Connection", Snackbar.LENGTH_SHORT).show();
     }
 
     @Override
@@ -111,7 +113,8 @@ public class otp_layout extends Activity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 fetchOtp();
             } else {
-                Toast.makeText(this, "You denied the permission", Toast.LENGTH_LONG).show();
+
+                Snackbar.make(findViewById(R.id.otp_parent) ,"You denied the permission", Snackbar.LENGTH_SHORT).show();
             }
         }
     }
@@ -242,7 +245,8 @@ public class otp_layout extends Activity {
                 }
             });
         } else {
-            Toast.makeText(otp_layout.this, "No Connection", Toast.LENGTH_SHORT).show();
+
+            Snackbar.make(findViewById(R.id.otp_parent) ,"No Connection", Snackbar.LENGTH_SHORT).show();
         }
     }
 

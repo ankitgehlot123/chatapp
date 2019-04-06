@@ -10,12 +10,10 @@ import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.company.my.chatapp.utils.Session;
 import com.company.my.chatapp.utils.utils;
@@ -27,8 +25,8 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 
-public class update_profile extends AppCompatActivity {
-    Session session = new Session(update_profile.this);
+public class profile extends AppCompatActivity {
+    Session session = new Session(profile.this);
     ImageView image;
     EditText user_name;
     Button update;
@@ -40,7 +38,7 @@ public class update_profile extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_update_profile);
+        setContentView(R.layout.activity_profile);
 
         image = (ImageView) findViewById(R.id.profile_pic);
         user_name = (EditText) findViewById(R.id.user_name);
@@ -95,7 +93,7 @@ public class update_profile extends AppCompatActivity {
 
     public void update(View v) {
         if (utils.checkConnection(getApplicationContext()) == 1) {
-            progressDialog = new ProgressDialog(update_profile.this);
+            progressDialog = new ProgressDialog(profile.this);
             progressDialog.setMessage("Uploading, please wait...");
             progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.show();
@@ -131,5 +129,13 @@ public class update_profile extends AppCompatActivity {
                     .show();
 
         }
+    }
+    public void logout(View view){
+        utils.clearShared(view.getContext());
+        getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isFirstRun", true).apply();
+        Intent intent = new Intent(this,login.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 }

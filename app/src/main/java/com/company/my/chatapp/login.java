@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
@@ -25,6 +26,8 @@ import com.company.my.chatapp.utils.utils;
 import com.hbb20.CountryCodePicker;
 
 import java.util.List;
+
+import static android.support.constraint.Constraints.TAG;
 
 
 public class login extends Activity {
@@ -51,15 +54,18 @@ public class login extends Activity {
 
         if (!checkPermission(wantPermission)) {
             requestPermission(wantPermission);
-        } else {
-            //Log.d(TAG, "Phone number: " + getPhone());\
+        }else {
+            Log.e( "Phone number: ","" + getPhone());
 
-            String phoneNumber = getPhone();
-            phoneNumber = phoneNumber.replaceAll("-", "").replaceAll("\\s", "");
-            if (phoneNumber.length() > 10) {
-                phoneNumber = phoneNumber.substring(phoneNumber.length() - 10);
-            }
-            mob_no.setText(phoneNumber);
+           if (getPhone() != null)
+           {
+                String phoneNumber = getPhone();
+                phoneNumber = phoneNumber.replaceAll("-", "").replaceAll("\\s", "");
+                if (phoneNumber.length() > 10) {
+                    phoneNumber = phoneNumber.substring(phoneNumber.length() - 10);
+                }
+                mob_no.setText(phoneNumber);
+           }
         }
 
         codePicker = (CountryCodePicker) findViewById(R.id.code);
@@ -69,7 +75,7 @@ public class login extends Activity {
             public void onClick(View v) {
                 if (utils.checkConnection(getApplicationContext()) == 1) {
                     if (mob_no.getText().length() != 10)
-                        Toast.makeText(login.this, "Invalid Mobile Number", Toast.LENGTH_SHORT).show();
+                        Snackbar.make(findViewById(R.id.login),"Invalid Mobile Number",Snackbar.LENGTH_SHORT).show();
                     else {
                         mob_no_string = codePicker.getSelectedCountryCode() + mob_no.getText().toString();
                         mob_no_string = mob_no_string.replaceAll("-", "").replaceAll("\\s", "");
@@ -96,7 +102,7 @@ public class login extends Activity {
                         });
                     }
                 } else {
-                    Toast.makeText(login.this, "No Connection", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(R.id.login),"No Connection",Snackbar.LENGTH_SHORT).show();
                 }
             }
         });
@@ -135,7 +141,7 @@ public class login extends Activity {
         switch (requestCode) {
             case PERMISSION_REQUEST_CODE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    //Log.d(TAG, "Phone number: " + getPhone());
+                    Log.e( "Phone number: " ,""+getPhone());
                     String phoneNumber = getPhone();
                     phoneNumber = phoneNumber.replaceAll("-", "").replaceAll("\\s", "");
                     if (phoneNumber.length() > 10) {
@@ -143,7 +149,8 @@ public class login extends Activity {
                     }
                     mob_no.setText(phoneNumber);
                 } else {
-                    Toast.makeText(this, "Permission Denied. We can't get phone number.", Toast.LENGTH_LONG).show();
+                    Snackbar.make(findViewById(R.id.login),"Permission Denied. We can't get phone number.",Snackbar.LENGTH_SHORT).show();
+
                 }
                 break;
         }
@@ -164,7 +171,7 @@ public class login extends Activity {
 
     private void requestPermission(String permission) {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
-            Toast.makeText(this, "Phone state permission allows us to get phone number. Please allow it for additional functionality.", Toast.LENGTH_LONG).show();
+            Snackbar.make(findViewById(R.id.login),"Phone state permission allows us to get phone number. Please allow it for additional functionality.",Snackbar.LENGTH_SHORT).show();
         }
         ActivityCompat.requestPermissions(this, new String[]{permission}, PERMISSION_REQUEST_CODE);
     }

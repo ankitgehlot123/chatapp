@@ -13,6 +13,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
@@ -37,6 +38,7 @@ import android.widget.Toast;
 
 import com.company.my.chatapp.adapters.MessageAdapterGroup;
 import com.company.my.chatapp.modal.Message;
+import com.facebook.drawee.backends.pipeline.Fresco;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,6 +66,7 @@ public class GroupFragment extends Fragment {
     private static final String TAG = "GroupFragment";
     static final int REQUEST_TAKE_PHOTO = 2;
     private static final int REQUEST_LOGIN = 0;
+    private static  final String image_webhook="http://192.168.43.157:1880/getimage?url=";
     private static final int TYPING_TIMER_LENGTH = 600;
     private RecyclerView mMessagesView;
     private EditText mInputMessageView;
@@ -93,8 +96,7 @@ public class GroupFragment extends Fragment {
                             }
                             mSocket.emit("Group join_room", data);
                         }
-                        Toast.makeText(getActivity().getApplicationContext(),
-                                R.string.connect, Toast.LENGTH_LONG).show();
+                        Snackbar.make(getActivity().findViewById(R.id.group_fragment),R.string.connect,Snackbar.LENGTH_SHORT).show();
                         isConnected = true;
                     }
                 }
@@ -109,8 +111,8 @@ public class GroupFragment extends Fragment {
                 public void run() {
                     Log.i(TAG, "diconnected");
                     isConnected = false;
-                    Toast.makeText(getActivity().getApplicationContext(),
-                            R.string.disconnect, Toast.LENGTH_LONG).show();
+                    Snackbar.make(getActivity().findViewById(R.id.group_fragment),R.string.disconnect,Snackbar.LENGTH_SHORT).show();
+
                 }
             });
         }
@@ -122,8 +124,9 @@ public class GroupFragment extends Fragment {
                 @Override
                 public void run() {
                     Log.e(TAG, "Error connecting");
-                    Toast.makeText(getActivity().getApplicationContext(),
-                            R.string.error_connect, Toast.LENGTH_LONG).show();
+                    Snackbar.make(getActivity().findViewById(R.id.group_fragment),R.string.error_connect,Snackbar.LENGTH_SHORT).show();
+
+
                 }
             });
         }
@@ -154,20 +157,12 @@ public class GroupFragment extends Fragment {
                             imageText = jsonObject.getString("message");
                             username = data.getString("username");
                             timestamp= stringToDate(jsonObject.getString("timestamp"));
-                            Log.i("image",imageText);
-                            Bitmap bitmap=decodeImage(imageText);
-                            File file=createImageFile(1);
-                            FileOutputStream out = new FileOutputStream(file);
-                            bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
-                            out.flush();
-                            out.close();
-                            addImage(username, Uri.fromFile(file),1,2,timestamp);
+                            addImage(username,Uri.parse(image_webhook+imageText),4,2,timestamp);
+
                         }
                     } catch (JSONException e) {
                         Log.e(TAG, e.getMessage());
                         return;
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
                 }
             });
@@ -291,7 +286,7 @@ public class GroupFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         setHasOptionsMenu(true);
-
+        Fresco.initialize(getContext());
         ChatApplication app = (ChatApplication) getActivity().getApplication();
         mSocket = app.getSocket();
         mSocket.on(Socket.EVENT_CONNECT,onConnect);
@@ -410,7 +405,7 @@ public class GroupFragment extends Fragment {
                     e.printStackTrace();
                 }
                 Log.i("galleryImagePath",":"+selectedImage.toString());
-                sendImage(bitmap,selectedImage,0,0);
+                sendImage(bitmap,selectedImage,3,0);
             }
             //Camera result
             else{
@@ -421,7 +416,7 @@ public class GroupFragment extends Fragment {
                     e.printStackTrace();
                 }
                 FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-                sendImage(BitmapFactory.decodeFileDescriptor(fileDescriptor),mCurrentPhotoPath,0,1);
+                sendImage(BitmapFactory.decodeFileDescriptor(fileDescriptor),mCurrentPhotoPath,3,1);
             }
         }
     }
@@ -447,10 +442,10 @@ public class GroupFragment extends Fragment {
     private void addImage(String username, Uri uri, int trans_type, int source_type,Date timestamp){
 
         Log.i("ankit",uri.toString());
-        if(trans_type==0)
-            mMessages.add(new Message.Builder(Message.TYPE_MESSAGE_SENDER).username(username).timestamp(timestamp).image(uri).build());
-        else
-            mMessages.add(new Message.Builder(Message.TYPE_MESSAGE_RECEIVER).username(username).timestamp(timestamp).image(uri).build());
+        if(trans_type==3)
+            mMessages.add(new Message.Builder(Message.TYPE_MESSAGE_IMAGE_SENDER).username(username).timestamp(timestamp).image(uri).build());
+        else if(trans_type==4)
+            mMessages.add(new Message.Builder(Message.TYPE_MESSAGE_IMAGE_RECEIVER).username(username).timestamp(timestamp).image(uri).build());
         mAdapter = new MessageAdapterGroup(getContext(),mMessages);
         mAdapter.notifyItemInserted(0);
         galleryAddPic(uri);
@@ -569,7 +564,7 @@ public class GroupFragment extends Fragment {
         if(trans_type==0)
             mMessages.add(new Message.Builder(Message.TYPE_MESSAGE_SENDER)
                     .username(username).message(message).timestamp(timestamp).build());
-        else{
+        else if(trans_type==1){
             mMessages.add(new Message.Builder(Message.TYPE_MESSAGE_RECEIVER)
                     .username(username).message(message).timestamp(timestamp).build());
         }

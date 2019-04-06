@@ -8,8 +8,10 @@ public class Message {
 
     public static final int TYPE_MESSAGE_SENDER = 1;
     public static final int TYPE_MESSAGE_RECEIVER = 2;
-    public static final int TYPE_LOG = 3;
-    public static final int TYPE_ACTION = 4;
+    public static final int TYPE_MESSAGE_IMAGE_SENDER = 3;
+    public static final int TYPE_MESSAGE_IMAGE_RECEIVER = 4;
+    public static final int TYPE_LOG = 5;
+    public static final int TYPE_ACTION = 6;
     private int mType;
     private String mMessage;
     private String mUsername;
@@ -40,7 +42,6 @@ public class Message {
     public Uri getImage() {
         return mImage;
     }
-
     public Date getTimestamp() {
         return mtimestamp;
     }
@@ -72,7 +73,6 @@ public class Message {
             mImage = image;
             return this;
         }
-
         public Builder timestamp(Date timestamp) {
             mTimestamp = timestamp;
             return this;
