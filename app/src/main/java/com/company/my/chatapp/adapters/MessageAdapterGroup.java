@@ -132,6 +132,7 @@ public class MessageAdapterGroup extends RecyclerView.Adapter<MessageAdapterGrou
                 public void onClick(View view) {
                     Intent intent = new Intent(context, imageFullscreen.class);
                     intent.putExtra("image", uri.toString());
+
                     context.startActivity(intent);
                 }
             });
@@ -140,15 +141,15 @@ public class MessageAdapterGroup extends RecyclerView.Adapter<MessageAdapterGrou
 
         private void setPic(Uri uri) {
 
-            ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
-                    .setProgressiveRenderingEnabled(true)
-                    .setRotationOptions(RotationOptions.autoRotate())
-                    .build();
-            DraweeController controller = Fresco.newDraweeControllerBuilder()
-                    .setImageRequest(request)
-                    .setOldController(mImageView.getController())
-                    .build();
-            mImageView.setController(controller);
+                ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
+                        .setProgressiveRenderingEnabled(true)
+                        .build();
+                DraweeController controller = Fresco.newDraweeControllerBuilder()
+                        .setImageRequest(request)
+                        .setOldController(mImageView.getController())
+                        .build();
+                mImageView.setController(controller);
+
 
            /* Log.i("ANKIT_URL", uri.toString() + "\n" + uri.getEncodedPath());
             ParcelFileDescriptor parcelFileDescriptor = null;

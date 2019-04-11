@@ -22,8 +22,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.company.my.chatapp.utils.Session;
 import com.company.my.chatapp.utils.utils;
 import com.hbb20.CountryCodePicker;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -43,6 +47,7 @@ public class login extends Activity {
     String phone_n = null;
     CountryCodePicker codePicker;
     com.company.my.chatapp.utils.utils utils = new utils();
+    Session session= new Session(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +90,7 @@ public class login extends Activity {
                         mob_no_string = "+91" + mob_no_string;
                         //Log.i("Phone",mob_no_string);
                         ProgressDialog progressDialog = new ProgressDialog(login.this);
-                        progressDialog.setMessage("Login...");
+                        progressDialog.setMessage("Logging in...");
                         progressDialog.setCanceledOnTouchOutside(false);
                         progressDialog.show();
                         final Intent[] intent = new Intent[1];
@@ -142,7 +147,9 @@ public class login extends Activity {
             case PERMISSION_REQUEST_CODE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.e( "Phone number: " ,""+getPhone());
-                    String phoneNumber = getPhone();
+
+                    if(getPhone() != null){
+                        String phoneNumber = getPhone();
                     phoneNumber = phoneNumber.replaceAll("-", "").replaceAll("\\s", "");
                     if (phoneNumber.length() > 10) {
                         phoneNumber = phoneNumber.substring(phoneNumber.length() - 10);
@@ -151,7 +158,7 @@ public class login extends Activity {
                 } else {
                     Snackbar.make(findViewById(R.id.login),"Permission Denied. We can't get phone number.",Snackbar.LENGTH_SHORT).show();
 
-                }
+                }}
                 break;
         }
     }

@@ -10,10 +10,14 @@ import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.company.my.chatapp.utils.Session;
 import com.company.my.chatapp.utils.utils;
@@ -29,6 +33,7 @@ public class profile extends AppCompatActivity {
     Session session = new Session(profile.this);
     ImageView image;
     EditText user_name;
+    String user_name_text;
     Button update;
     String imageString = null;
     Bitmap bitmap = null;
@@ -39,22 +44,48 @@ public class profile extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        //int source=getIntent().getIntExtra("source",0);
 
-        image = (ImageView) findViewById(R.id.profile_pic);
-        user_name = (EditText) findViewById(R.id.user_name);
-        update = (Button) findViewById(R.id.update);
+        image = findViewById(R.id.profile_pic);
+        user_name = findViewById(R.id.user_name);
+        update = findViewById(R.id.update);
+       /* if(source == 1){
+            user_name_text= getIntent().getStringExtra("username");
+            imageString=getIntent().getStringExtra("contact_pic");
+            Log.e("nana",imageString);
+            setup_name_pic(1);
+            LinearLayout linearLayout=findViewById(R.id.profile_buttons);
+            ImageButton imageButton=findViewById(R.id.change_image);
+            user_name.setEnabled(false);
+            imageButton.setVisibility(View.GONE);
+            linearLayout.setVisibility(View.GONE);
 
-        setup_name_pic();
+       }else*/
+        setup_name_pic(0);
     }
 
-    private void setup_name_pic() {
+    private void setup_name_pic(int source) {
         if (session.getUsername() != "") {
-            user_name.setText(session.getUsername());
+            if(source==1)
+                user_name.setText(user_name_text);
+            else
+                user_name.setText(session.getUsername());
         }
         if (session.getProfilePic() != "") {
-            byte[] decodedString = Base64.decode(session.getProfilePic(), Base64.DEFAULT);
-            Bitmap decodeByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-            image.setImageBitmap(decodeByte);
+            if(source==1){
+                byte[] decodedString = Base64.decode(imageString, Base64.DEFAULT);
+                Bitmap decodeByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                decodeByte.compress(Bitmap.CompressFormat.JPEG,70,baos);
+                byte[] b = baos.toByteArray();
+                decodedString = Base64.decode(b, Base64.DEFAULT);
+                decodeByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                image.setImageBitmap(decodeByte);
+            }else{
+                byte[] decodedString = Base64.decode(session.getProfilePic(), Base64.DEFAULT);
+                Bitmap decodeByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                image.setImageBitmap(decodeByte);
+            }
         }
     }
 
@@ -113,6 +144,7 @@ public class profile extends AppCompatActivity {
                 postparams.put("id", session.getUserId());
                 postparams.put("mob_no", session.getMob_no());
                 postparams.put("username", user_name.getText());
+                postparams.put("regisToken",session.getRegisToken());
                 if (imageString != null) {
                     postparams.put("pic", imageString);
                 }
@@ -131,11 +163,13 @@ public class profile extends AppCompatActivity {
         }
     }
     public void logout(View view){
-        utils.clearShared(view.getContext());
+
+        utils.clearShared(this);
         getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isFirstRun", true).apply();
-        Intent intent = new Intent(this,login.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
+        Intent intent = new Intent(this, login.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        this.startActivity(intent);
         finish();
+        Toast.makeText(this, "Logged Out Successfully", Toast.LENGTH_SHORT).show();
     }
 }

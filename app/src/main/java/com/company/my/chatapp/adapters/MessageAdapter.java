@@ -37,7 +37,6 @@ import java.util.List;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
     Context context;
-    int is_image=0;
     private List<Message> mMessages;
     private int[] mUsernameColors;
 
@@ -127,7 +126,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         public void setImage(final Uri uri) throws IOException {
             if (null == mImageView) return;
             if (null == uri) return;
-            is_image=1;
+
             mImageView.setVisibility(View.VISIBLE);
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             mImageView.setOnClickListener(new View.OnClickListener() {
@@ -142,15 +141,17 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         }
 
         private void setPic(Uri uri) {
+
             ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
                     .setProgressiveRenderingEnabled(true)
-                    .setRotationOptions(RotationOptions.autoRotate())
                     .build();
-            DraweeController controller = Fresco.newDraweeControllerBuilder()
-                    .setImageRequest(request)
-                    .setOldController(mImageView.getController())
-                    .build();
-            mImageView.setController(controller);
+                DraweeController controller = Fresco.newDraweeControllerBuilder()
+                        .setImageRequest(request)
+                        .setOldController(mImageView.getController())
+                        .build();
+                mImageView.setController(controller);
+
+
            // mImageView.setImageURI(uri);
             // Get the dimensions of the View
 

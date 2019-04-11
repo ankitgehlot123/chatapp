@@ -33,6 +33,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -95,6 +96,7 @@ public class MainFragment extends Fragment {
     private String m_mob_no;
     private Date timestamp;
     private Socket mSocket;
+    private boolean is_push;
     private int REQUEST_OPEN_GALLARY=1;
     private Boolean isConnected = false;
     Document filter;
@@ -366,13 +368,16 @@ public class MainFragment extends Fragment {
         Session session=new Session(getContext());
         m_mob_no = session.getMob_no().replace("+","");
         Bundle bundle= this.getArguments();
+        is_push= bundle.getBoolean("is_push");
         m_username= bundle.getString("username");
+        m_messageObj=bundle.get("message");
         m_receiver=bundle.getString("mob_no").replace("+","");
         if(Long.parseLong(m_mob_no) > Long.parseLong(m_receiver))
             mRoomid=m_mob_no+m_receiver;
         else
             mRoomid=m_receiver+m_mob_no;
-
+        if(is_push)
+            addPushMessage(m_username,);
         //MongoDB Parameters
         filter = new Document().append("room_id",mRoomid);
         updateOption = new UpdateOptions().upsert(true);
@@ -668,6 +673,61 @@ public class MainFragment extends Fragment {
         }
         mAdapter.notifyItemInserted(mMessages.size() - 1);
         scrollToBottom();
+    }
+
+    private void addPushMessage(String username, JSONObject messageObj) {
+
+
+        String message=null;
+        String imageText;
+        try {
+
+            Document updateDoc;
+
+            if(messageObj.getString("type").equals("text")){
+                message = messageObj.getString("message");
+                timestamp= stringToDate(messageObj.getString("timestamp"));
+                removeTyping(username);
+                addMessage(username, message,1,timestamp);
+                //Update MsgQ
+                messageObj.put("trans_type","1");
+                messageObj.put("username",username);
+                JSONObject msgQ = new JSONObject().put("msgQ",messageObj);
+                JSONObject doc = new JSONObject().put("$addToSet",msgQ);
+                updateDoc = Document.parse(doc.toString());
+                //Update LocalDBChat
+                utils.chatCollection.updateOne(filter,updateDoc,updateOption);
+                Log.d("dataCheck",doc.toString());
+            } else {
+                Log.e("imgOj",messageObj.toString());
+                imageText = messageObj.getString("message");
+                timestamp= stringToDate(messageObj.getString("timestamp"));
+
+                addImage(username,Uri.parse(image_webhook+imageText),4,2,timestamp);
+
+                //Update MsgQ
+                messageObj.put("trans_type","4");
+                messageObj.put("username",username);
+                JSONObject msgQ = new JSONObject().put("msgQ",messageObj);
+                JSONObject doc = new JSONObject().put("$addToSet",msgQ);
+                updateDoc = Document.parse( messageObj.toString());
+                Log.e("docdoc",updateDoc.toString());
+                //utils.chatCollection.updateOne(filter,updateDoc,updateOption);
+            }
+
+            //Update Recent Chat in Contact List
+            updateContactList();
+            //Delete the msgQ
+            if(messageObj.has("type")){
+                JSONObject time = new JSONObject();
+                time.put("room",mRoomid);
+                time.put("timestamp",timestamp);
+                mSocket.emit("delete_msgQ", time);
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, e.getMessage());
+            return;
+        }
     }
 
     private void addTyping(String username, int trans_type) {

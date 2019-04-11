@@ -1,8 +1,14 @@
 package com.company.my.chatapp;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.media.RingtoneManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -25,6 +31,7 @@ import com.company.my.chatapp.contactListShow.contactListAdapter;
 import com.company.my.chatapp.utils.Session;
 import com.company.my.chatapp.utils.utils;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.mongodb.client.FindIterable;
 
 import org.bson.Document;
@@ -38,6 +45,8 @@ import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String CHANNEL_ID = "Chat";
+    private static final String CHANNEL_DESC = "chatapp notification";
     RecyclerView rvContacts;
     Session session;
     ImageView image;
@@ -70,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         contactList();
 
         setup_pic();
+        createNotificationChannel();
     }
     public void contactList(){
 
@@ -151,15 +161,32 @@ public class MainActivity extends AppCompatActivity {
        Intent intent = new Intent(this,profile.class);
        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
        startActivity(intent);
-       finish();
    }
     private void setup_pic() {
 
         if (session.getProfilePic() != "") {
             byte[] decodedString = Base64.decode(session.getProfilePic(), Base64.DEFAULT);
             Bitmap decodeByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-
             image.setImageBitmap(decodeByte);
         }
+    }
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = CHANNEL_ID;
+            String description = CHANNEL_DESC;
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            channel.enableVibration(true);
+            channel.enableLights(true);
+            channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+            channel.setLightColor(Color.BLUE);
+            channel.setShowBadge(true);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+
     }
 }

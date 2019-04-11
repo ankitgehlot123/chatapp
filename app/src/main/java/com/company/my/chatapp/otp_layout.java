@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.company.my.chatapp.utils.Session;
 import com.company.my.chatapp.utils.utils;
 
 import org.apache.http.NameValuePair;
@@ -28,7 +29,7 @@ import org.apache.http.NameValuePair;
 import java.util.List;
 
 public class otp_layout extends Activity {
-
+    private Session session= new Session(this);
     private static final int REQUEST_CODE = 1;
     EditText ed_otp, ed_otp1, ed_otp2, ed_otp3;
     Button otp_button;

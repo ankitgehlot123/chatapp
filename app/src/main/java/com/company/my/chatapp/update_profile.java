@@ -41,7 +41,7 @@ public class update_profile extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_profile);
-
+        getIntent().getIntExtra("source",0);
         image = (ImageView) findViewById(R.id.profile_pic);
         user_name = (EditText) findViewById(R.id.user_name);
         update = (Button) findViewById(R.id.update);
@@ -115,6 +115,7 @@ public class update_profile extends AppCompatActivity {
                 postparams.put("id", session.getUserId());
                 postparams.put("mob_no", session.getMob_no());
                 postparams.put("username", user_name.getText());
+                postparams.put("regisToken",session.getRegisToken());
                 if (imageString != null) {
                     postparams.put("pic", imageString);
                 }

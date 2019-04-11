@@ -1,6 +1,7 @@
 package com.company.my.chatapp;
 
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -187,19 +188,20 @@ public class imageFullscreen extends AppCompatActivity {
         bmOptions.inJustDecodeBounds = false;
         bmOptions.inPurgeable = true;
         Bitmap b = BitmapFactory.decodeFileDescriptor(fileDescriptor, null, bmOptions);*/
-        request = ImageRequestBuilder.newBuilderWithSource(encImage)
-                .setProgressiveRenderingEnabled(true)
-                .setRotationOptions(RotationOptions.autoRotate())
-                .build();
-        DraweeController controller = Fresco.newDraweeControllerBuilder()
-                .setImageRequest(request)
-                .setOldController(mContentView.getController())
-                .build();
-        mContentView.setController(controller);
 
-        //mContentView.setImageURI(encImage);
+           request = ImageRequestBuilder.newBuilderWithSource(encImage)
+                   .setProgressiveRenderingEnabled(true)
+                   .build();
+           DraweeController controller = Fresco.newDraweeControllerBuilder()
+                   .setImageRequest(request)
+                   .setOldController(mContentView.getController())
+                   .build();
+           mContentView.setController(controller);
 
-    }
+       }
+
+
+
 
     public void saveImage(View view) {
 
@@ -225,6 +227,7 @@ public class imageFullscreen extends AppCompatActivity {
                             photoFile = createImageFile();
                             FileOutputStream out = new FileOutputStream(photoFile);
                             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                            galleryAddPic(photoFile);
                             out.flush();
                             out.close();
                             Toast.makeText(imageFullscreen.this, "Saved", Toast.LENGTH_SHORT).show();
@@ -244,7 +247,7 @@ public class imageFullscreen extends AppCompatActivity {
                     dataSource.close();
                 }
             }
-            galleryAddPic(mContentUri);
+
 
         }
 
@@ -267,14 +270,17 @@ public class imageFullscreen extends AppCompatActivity {
             mContentUri=Uri.fromFile(image);
             return image;
         }
-    private void galleryAddPic(Uri contentUri){
+    private void galleryAddPic(File file){
 
         ContentValues values = new ContentValues();
-
-        values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
-        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-        values.put(MediaStore.MediaColumns.DATA, contentUri.getPath());
-        this.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        values.put(MediaStore.Images.Media.TITLE, file.getName());
+        values.put(MediaStore.Images.Media.DESCRIPTION,file.getName());
+        values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis ());
+        values.put(MediaStore.Images.ImageColumns.BUCKET_ID, file.toString().toLowerCase(Locale.US).hashCode());
+        values.put(MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME, file.getName().toLowerCase(Locale.US));
+        values.put("_data", file.getAbsolutePath());
+        ContentResolver cr = getContentResolver();
+        cr.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
     }
 
 }

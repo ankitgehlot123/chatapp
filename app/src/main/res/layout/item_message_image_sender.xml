@@ -19,7 +19,6 @@
             android:layout_height="130dp"
             android:visibility="gone"
             fresco:failureImage="@drawable/ic_broken_image_black_24dp"
-            fresco:actualImageScaleType="centerCrop"
             fresco:retryImage="@drawable/ic_refresh_black_24dp"
             android:layout_gravity="top|center_horizontal"
             fresco:placeholderImage="@drawable/ic_insert_photo_black_24dp"

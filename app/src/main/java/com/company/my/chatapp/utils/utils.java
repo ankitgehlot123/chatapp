@@ -62,6 +62,7 @@ public class utils extends Activity {
         editor.putString(name, value);
         editor.commit();
     }
+
     public static void clearShared(Context context) {
         SharedPreferences prefs = PreferenceManager
                 .getDefaultSharedPreferences(context);
@@ -114,24 +115,18 @@ public class utils extends Activity {
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,
                 url + "update_contact_list",
                 postparams,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject res) {
-                        JSONArray contactList;
-                        try {
-                            contactList = res.getJSONArray("contactList");
-                            callback.onSuccess(contactList);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                res -> {
+                    JSONArray contactList;
+                    try {
+                        contactList = res.getJSONArray("contactList");
+                        callback.onSuccess(contactList);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-                progressDialog.dismiss();
-                Toast.makeText(context, "Some error occurred" + volleyError, Toast.LENGTH_LONG).show();
-            }
-        });
+                }, volleyError -> {
+                    progressDialog.dismiss();
+                    Toast.makeText(context, "Some error occurred" + volleyError, Toast.LENGTH_LONG).show();
+                });
         // Adding the request to the queue along with a unique string tag
         RequestQueue rQueue = Volley.newRequestQueue(context);
         rQueue.add(request);
@@ -152,29 +147,23 @@ public class utils extends Activity {
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,
                 url + "login",
                 postparams,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject res) {
-                        progressDialog.dismiss();
-                        String log_status = null;
-                        try {
-                            log_status = res.getString("log_status");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        if (log_status.equals("true")) {
-                            callback.onSuccess("true");
-                        } else {
-                            Toast.makeText(context, "Some error occurred", Toast.LENGTH_LONG).show();
-                        }
+                res -> {
+                    progressDialog.dismiss();
+                    String log_status = null;
+                    try {
+                        log_status = res.getString("log_status");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-                progressDialog.dismiss();
-                Toast.makeText(context, "Some error occurred" + volleyError, Toast.LENGTH_LONG).show();
-            }
-        });
+                    if (log_status.equals("true")) {
+                        callback.onSuccess("true");
+                    } else {
+                        Toast.makeText(context, "Some error occurred", Toast.LENGTH_LONG).show();
+                    }
+                }, volleyError -> {
+                    progressDialog.dismiss();
+                    Toast.makeText(context, "Some error occurred" + volleyError, Toast.LENGTH_LONG).show();
+                });
         // Adding the request to the queue along with a unique string tag
         RequestQueue rQueue = Volley.newRequestQueue(context);
         rQueue.add(request);
@@ -199,41 +188,35 @@ public class utils extends Activity {
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,
                 url + "auth",
                 postparams,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject res) {
-                        progressDialog.dismiss();
-                        try {
-                            String auth_status = res.getString("auth_status");
-                            if (auth_status.equals("true")) {
+                res -> {
+                    progressDialog.dismiss();
+                    try {
+                        String auth_status = res.getString("auth_status");
+                        if (auth_status.equals("true")) {
 
-                                session.setMob_no(mobtext);
-                                if (res.has("_id"))
-                                    session.setUserId(res.getString("_id"));
-                                if (res.has("username"))
-                                    session.setUsername(res.getString("username"));
-                                if (res.has("pic"))
-                                    session.setProfilePic(res.getString("pic"));
-                                callback.onSuccess("true");
-                            } else if (auth_status.equals("invalid_otp")) {
-                                Toast.makeText(context, "Invalid Otp", Toast.LENGTH_SHORT).show();
-                            } else if (auth_status.equals("otp_expire")) {
-                                Toast.makeText(context, "Otp Expire", Toast.LENGTH_SHORT).show();
-                            } else {
-                                progressDialog.dismiss();
-                                Toast.makeText(context, "Some error occurred", Toast.LENGTH_LONG).show();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                            session.setMob_no(mobtext);
+                            if (res.has("_id"))
+                                session.setUserId(res.getString("_id"));
+                            if (res.has("username"))
+                                session.setUsername(res.getString("username"));
+                            if (res.has("pic"))
+                                session.setProfilePic(res.getString("pic"));
+                            callback.onSuccess("true");
+                        } else if (auth_status.equals("invalid_otp")) {
+                            Toast.makeText(context, "Invalid Otp", Toast.LENGTH_SHORT).show();
+                        } else if (auth_status.equals("otp_expire")) {
+                            Toast.makeText(context, "Otp Expire", Toast.LENGTH_SHORT).show();
+                        } else {
+                            progressDialog.dismiss();
+                            Toast.makeText(context, "Some error occurred", Toast.LENGTH_LONG).show();
                         }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-                progressDialog.dismiss();
-                Toast.makeText(context, "Some error occurred" + volleyError, Toast.LENGTH_LONG).show();
-            }
-        });
+                }, volleyError -> {
+                    progressDialog.dismiss();
+                    Toast.makeText(context, "Some error occurred" + volleyError, Toast.LENGTH_LONG).show();
+                });
         // Adding the request to the queue along with a unique string tag
         RequestQueue rQueue = Volley.newRequestQueue(context);
         rQueue.add(request);
@@ -248,11 +231,13 @@ public class utils extends Activity {
         //Clear all the Session Values
         final Session session = new Session(context);
         session.ClearSession();
+        utils.clearShared(context);
+        getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isFirstRun", true).apply();
         Intent intent = new Intent(context, login.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(intent);
         finish();
-        Toast.makeText(context, "LogOut Successfully", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "Logged Out Successfully", Toast.LENGTH_SHORT).show();
     }
 
     public void update_profile(final Context context, final JSONObject postparams, final ProgressDialog progressDialog) {
@@ -260,44 +245,38 @@ public class utils extends Activity {
         final JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,
                 utils.url + "update_profile",
                 postparams,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject res) {
-                        progressDialog.dismiss();
-                        String status = null;
+                res -> {
+                    progressDialog.dismiss();
+                    String status = null;
+                    try {
+                        status = res.getString("status");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    if (status.equals("true")) {
+                        //Toast.makeText(update_profile.this, "Uploaded Successful", Toast.LENGTH_LONG).show();
+                        //Set the Session Variables
                         try {
-                            status = res.getString("status");
+
+                            session.setUsername(postparams.getString("username"));
+                            if (postparams.getString("pic") != null) {
+                                session.setProfilePic(postparams.getString("pic"));
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        if (status.equals("true")) {
-                            //Toast.makeText(update_profile.this, "Uploaded Successful", Toast.LENGTH_LONG).show();
-                            //Set the Session Variables
-                            try {
-
-                                session.setUsername(postparams.getString("username"));
-                                if (postparams.getString("pic") != null) {
-                                    session.setProfilePic(postparams.getString("pic"));
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                            Intent intent = new Intent(context, contactListUpdate.class);
-                            // set the new task and clear flags
-                            intent.putExtra("source",0);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            context.startActivity(intent);
-                            finish();
-                        } else {
-                            Toast.makeText(context, "Some error occurred", Toast.LENGTH_LONG).show();
-                        }
+                        Intent intent = new Intent(context, contactListUpdate.class);
+                        // set the new task and clear flags
+                        intent.putExtra("source",0);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        context.startActivity(intent);
+                        finish();
+                    } else {
+                        Toast.makeText(context, "Some error occurred", Toast.LENGTH_LONG).show();
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-                progressDialog.dismiss();
-                Toast.makeText(context, "Some error occurred" + volleyError, Toast.LENGTH_LONG).show();
-            }
+                }, volleyError -> {
+            progressDialog.dismiss();
+            Toast.makeText(context, "Some error occurred" + volleyError, Toast.LENGTH_LONG).show();
         });
         // Adding the request to the queue along with a unique string tag
         RequestQueue rQueue = Volley.newRequestQueue(context);
@@ -306,6 +285,7 @@ public class utils extends Activity {
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
     }
+
 
     //Volley Callback
     public interface VolleyCallback {

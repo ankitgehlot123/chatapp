@@ -8,6 +8,11 @@ public class Session {
     static public String mob_no = "mob_no";
     static public String username = "username";
     static public String profilePic = "profilePic";
+
+
+
+    static public String regisToken = "regisToken";
+
     Context context;
 
     public Session(Context context) {
@@ -45,11 +50,12 @@ public class Session {
         utils.setShared(context, username, userName);
     }
 
-    public String getProfilePic() {
-        return utils.getShared(context, profilePic, "");
-    }
+    public String getProfilePic() { return utils.getShared(context, profilePic, ""); }
 
-    public void setProfilePic(String pic) {
-        utils.setShared(context, profilePic, pic);
-    }
+    public void setProfilePic(String pic) { utils.setShared(context, profilePic, pic); }
+
+    public String getRegisToken() { return utils.getShared(context,regisToken, ""); }
+
+    public void setRegisToken(String token) { utils.setShared(context, regisToken, token); }
+
 }

@@ -1,5 +1,6 @@
 package com.company.my.chatapp.contactListShow;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -29,6 +30,7 @@ import com.android.volley.toolbox.NetworkImageView;
 import com.company.my.chatapp.MainFragment;
 import com.company.my.chatapp.R;
 import com.company.my.chatapp.chat_base;
+import com.company.my.chatapp.profile;
 import com.company.my.chatapp.utils.MyVolleySingelton;
 import com.company.my.chatapp.utils.utils;
 
@@ -42,6 +44,7 @@ public class contactListAdapter extends RecyclerView.Adapter{
     private List<contactGetSet> contactList;
     private Context context;
     private LayoutInflater inflater;
+    private String contact_pic;
 
 
     boolean value;
@@ -76,6 +79,7 @@ public class contactListAdapter extends RecyclerView.Adapter{
             //Set Image If Already exist
             if (feeds.getPic()!="profilepic.jpeg" && feeds.getPic()!=null){
                 //Log.d("ImageDB",StringToBitMap(feeds.getPic()).toString());
+                contact_pic=feeds.getPic();
                 byte[] decodedString = Base64.decode(feeds.getPic(), Base64.DEFAULT);
                 Bitmap decodeByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
                 ((MyViewHolder) holder).contact_image.setImageBitmap(decodeByte);
@@ -141,8 +145,16 @@ public class contactListAdapter extends RecyclerView.Adapter{
                 intent.putExtra("mob_no",mob_no);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
-
             });
+           /* contact_image.setOnClickListener(view -> {
+                Intent intent =new Intent(context, profile.class);
+                intent.putExtra("username",username.getText().toString());
+                intent.putExtra("mob_no",username.getText());
+                intent.putExtra("source",1);
+                //intent.putExtra("contact_pic",contact_pic);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            });*/
         }
     }
 

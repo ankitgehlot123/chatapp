@@ -11,6 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
 public class chat_base extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 1;
@@ -26,6 +28,7 @@ public class chat_base extends AppCompatActivity {
             Intent intent = getIntent();
             String mob_no = intent.getStringExtra("mob_no");
             String username = intent.getStringExtra("username");
+            Bundle message = intent.getBundleExtra("message");
             Bundle bundle = new Bundle();
             bundle.putString("mob_no", mob_no);
             bundle.putString("username", username);
