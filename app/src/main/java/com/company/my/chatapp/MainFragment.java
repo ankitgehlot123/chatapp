@@ -50,6 +50,7 @@ import com.mongodb.client.model.UpdateOptions;
 
 import org.bson.BsonDateTime;
 import org.bson.Document;
+import org.bson.codecs.MapCodec;
 import org.bson.types.BSONTimestamp;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -97,6 +98,7 @@ public class MainFragment extends Fragment {
     private Date timestamp;
     private Socket mSocket;
     private boolean is_push;
+    JSONObject messageObj;
     private int REQUEST_OPEN_GALLARY=1;
     private Boolean isConnected = false;
     Document filter;
@@ -325,6 +327,8 @@ public class MainFragment extends Fragment {
     private Uri mCurrentPhotoPath;
     private String mCurrentPhotoAbsoulutePath;
     private String mRoomid;
+    private String m_NotifMessage;
+    private String m_NotifTitle;
 
     public MainFragment() {
         super();
@@ -368,16 +372,23 @@ public class MainFragment extends Fragment {
         Session session=new Session(getContext());
         m_mob_no = session.getMob_no().replace("+","");
         Bundle bundle= this.getArguments();
-        is_push= bundle.getBoolean("is_push");
         m_username= bundle.getString("username");
-        m_messageObj=bundle.get("message");
         m_receiver=bundle.getString("mob_no").replace("+","");
         if(Long.parseLong(m_mob_no) > Long.parseLong(m_receiver))
             mRoomid=m_mob_no+m_receiver;
         else
             mRoomid=m_receiver+m_mob_no;
-        if(is_push)
-            addPushMessage(m_username,);
+        if((is_push=bundle.getBoolean("is_push",false))==true){
+            try {
+                 messageObj =new JSONObject(bundle.getString("data"));
+                 //addPushMessage(m_username,messageObj);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+
         //MongoDB Parameters
         filter = new Document().append("room_id",mRoomid);
         updateOption = new UpdateOptions().upsert(true);
@@ -691,7 +702,6 @@ public class MainFragment extends Fragment {
                 addMessage(username, message,1,timestamp);
                 //Update MsgQ
                 messageObj.put("trans_type","1");
-                messageObj.put("username",username);
                 JSONObject msgQ = new JSONObject().put("msgQ",messageObj);
                 JSONObject doc = new JSONObject().put("$addToSet",msgQ);
                 updateDoc = Document.parse(doc.toString());
@@ -707,7 +717,6 @@ public class MainFragment extends Fragment {
 
                 //Update MsgQ
                 messageObj.put("trans_type","4");
-                messageObj.put("username",username);
                 JSONObject msgQ = new JSONObject().put("msgQ",messageObj);
                 JSONObject doc = new JSONObject().put("$addToSet",msgQ);
                 updateDoc = Document.parse( messageObj.toString());

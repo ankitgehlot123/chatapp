@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.company.my.chatapp">
+    <meta-data
+        android:name="com.google.firebase.messaging.default_notification_icon"
+        android:resource="@drawable/ic_stat_name" />
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -40,18 +43,25 @@
             android:theme="@style/AppTheme.ActionBar"
             android:label="@string/ChatApp"></activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".otp_layout" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".login" />
 
         <activity
+            android:screenOrientation="portrait"
             android:name=".update_profile" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".profile" />
-        <activity android:name=".MainActivity" />
-        <activity android:name=".contactListUpdate" />
-        <activity android:name=".contactList" />
-        <activity android:name=".splash_screen">
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".contactListUpdate"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".contactList"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".splash_screen" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -61,7 +71,7 @@
             android:name=".imageFullscreen"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_image_fullscreen"
-            android:theme="@style/FullscreenTheme" />
+            android:theme="@style/FullscreenTheme"/>
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:screenOrientation="portrait"

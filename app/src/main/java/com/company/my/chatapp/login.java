@@ -87,7 +87,7 @@ public class login extends Activity {
                         if (mob_no_string.length() > 10) {
                             mob_no_string = mob_no_string.substring(mob_no_string.length() - 10);
                         }
-                        mob_no_string = "+91" + mob_no_string;
+                        mob_no_string = "91" + mob_no_string;
                         //Log.i("Phone",mob_no_string);
                         ProgressDialog progressDialog = new ProgressDialog(login.this);
                         progressDialog.setMessage("Logging in...");

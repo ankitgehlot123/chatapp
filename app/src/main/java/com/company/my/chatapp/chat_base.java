@@ -16,7 +16,7 @@ import org.json.JSONObject;
 public class chat_base extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 1;
-
+    String mob_no,username;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,12 +26,17 @@ public class chat_base extends AppCompatActivity {
             requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         else{
             Intent intent = getIntent();
-            String mob_no = intent.getStringExtra("mob_no");
-            String username = intent.getStringExtra("username");
-            Bundle message = intent.getBundleExtra("message");
             Bundle bundle = new Bundle();
+            if(intent.getBooleanExtra("is_push",false) == true)
+            {
+                bundle.putBoolean("is_push",true);
+                bundle.putString("data",intent.getStringExtra("data"));
+            }
+            mob_no = intent.getStringExtra("mob_no");
+            username = intent.getStringExtra("username");
             bundle.putString("mob_no", mob_no);
             bundle.putString("username", username);
+
             ActionBar actionBar = getSupportActionBar();
             actionBar.setTitle(username);
             MainFragment mainFragment = new MainFragment();
@@ -66,11 +71,17 @@ public class chat_base extends AppCompatActivity {
             case PERMISSION_REQUEST_CODE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Intent intent = getIntent();
-                    String mob_no = intent.getStringExtra("mob_no");
-                    String username = intent.getStringExtra("username");
                     Bundle bundle = new Bundle();
+                    if(intent.getBooleanExtra("is_push",false) == true)
+                    {
+                        bundle.putBoolean("is_push",true);
+                        bundle.putString("data",intent.getStringExtra("data"));
+                    }
+                    mob_no = intent.getStringExtra("mob_no");
+                    username = intent.getStringExtra("username");
                     bundle.putString("mob_no", mob_no);
                     bundle.putString("username", username);
+
                     ActionBar actionBar = getSupportActionBar();
                     actionBar.setTitle(username);
                     MainFragment mainFragment = new MainFragment();

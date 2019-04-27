@@ -186,6 +186,21 @@ public class MainActivity extends AppCompatActivity {
             channel.setShowBadge(true);
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
+
+
+            if (notificationManager.getNotificationChannel("fcm_fallback_notification_channel") != null) {
+                return;
+            }
+
+            String channelName = getString(R.string.fcm_fallback_notification_channel_label);
+            NotificationChannel Miscchannel = new NotificationChannel("fcm_fallback_notification_channel", channelName, NotificationManager.IMPORTANCE_HIGH);
+            Miscchannel.enableVibration(true);
+            Miscchannel.enableLights(true);
+            Miscchannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+            Miscchannel.setLightColor(Color.BLUE);
+            Miscchannel.setShowBadge(true);
+            Miscchannel.setImportance(importance);
+            notificationManager.createNotificationChannel(Miscchannel);
         }
 
     }

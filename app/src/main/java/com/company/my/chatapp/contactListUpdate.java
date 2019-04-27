@@ -70,10 +70,10 @@ public class contactListUpdate extends AppCompatActivity {
             if (phoneNumber.length() > 10) {
                 phoneNumber = phoneNumber.substring(phoneNumber.length() - 10);
             }
-            phoneNumber = "+91"+phoneNumber;
+            phoneNumber = "91"+phoneNumber;
             if(!list.contains(phoneNumber)){
                 //Log.d("List_Phone>>",phoneNumber);
-                if (phoneNumber.length() == 13) {
+                if (phoneNumber.length() == 12) {
                     list.add(phoneNumber);
                     contact_username.add(name);
                     contact_mob_no.add(phoneNumber);

@@ -36,9 +36,14 @@ import static android.support.constraint.Constraints.TAG;
 
 public class fcm_Service extends FirebaseMessagingService {
     private static final String CHANNEL_ID = "Chat";
-    private String mob_no=null,username=null;
+    private String notif_msg=null;
     private Session session=new Session(this);
     private static final String CHANNEL_DESC = "chatapp notification";
+    private String type;
+    private String username;
+    private Map<String, String> data;
+    private String mob_no;
+
     public fcm_Service() {
     }
 
@@ -62,8 +67,10 @@ public class fcm_Service extends FirebaseMessagingService {
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
-             mob_no=remoteMessage.getData().get("mob_no");
+             type=remoteMessage.getData().get("type");
              username=remoteMessage.getData().get("username");
+             mob_no=remoteMessage.getData().get("mob_no");
+             data=remoteMessage.getData();
         }
 
         // Check if message contains a notification payload.
@@ -77,18 +84,23 @@ public class fcm_Service extends FirebaseMessagingService {
     }
 
     private void sendNotification(RemoteMessage.Notification notification) {
+        if(type.equals("text"))
+            notif_msg=username+" sent you a message";
+        else
+            notif_msg=username+" sent you a photo";
         Intent intent = new Intent(this, chat_base.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("is_push",true);
+        intent.putExtra("data",(new JSONObject(data)).toString());
         intent.putExtra("username",username);
         intent.putExtra("mob_no",mob_no);
-        intent.putExtra("message",message);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
                 PendingIntent.FLAG_ONE_SHOT);
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_stat_name)
-                        .setContentTitle(notification.getTitle())
-                        .setContentText(notification.getBody())
+                        .setContentTitle("New message")
+                        .setContentText(notif_msg)
                         .setAutoCancel(true)
                         .setDefaults(DEFAULT_SOUND | DEFAULT_VIBRATE)
                         .setContentIntent(pendingIntent)
