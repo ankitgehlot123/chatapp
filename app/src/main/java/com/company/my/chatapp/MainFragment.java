@@ -327,8 +327,7 @@ public class MainFragment extends Fragment {
     private Uri mCurrentPhotoPath;
     private String mCurrentPhotoAbsoulutePath;
     private String mRoomid;
-    private String m_NotifMessage;
-    private String m_NotifTitle;
+
 
     public MainFragment() {
         super();

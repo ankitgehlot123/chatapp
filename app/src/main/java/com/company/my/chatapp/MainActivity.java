@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
         Document filter = new Document().append("timestamp",timestamp);
         FindIterable<Document> cursor = utils.contactListCollection.find(filter).sort(sort);
         Log.d("Check111","Hello");
+        Log.d("Check111",cursor.toString());
         Iterator<Document> iterator = cursor.iterator();
         while (iterator.hasNext()) {
 
@@ -101,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
             //document.remove("_id");
             Map<String, Object> map = new HashMap<>(document);
             JSONObject obj=new JSONObject(map);
+            Log.d("Check111",obj.toString());
             list.put(obj);
         }
         for (int i = 0; i < list.length(); i++) {
