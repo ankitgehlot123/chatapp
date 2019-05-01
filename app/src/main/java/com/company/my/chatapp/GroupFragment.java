@@ -34,7 +34,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.company.my.chatapp.adapters.MessageAdapterGroup;
 import com.company.my.chatapp.modal.Message;
@@ -47,7 +46,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -63,10 +61,10 @@ import io.socket.emitter.Emitter;
  */
 public class GroupFragment extends Fragment {
 
-    private static final String TAG = "GroupFragment";
     static final int REQUEST_TAKE_PHOTO = 2;
+    private static final String TAG = "GroupFragment";
     private static final int REQUEST_LOGIN = 0;
-    private static  final String image_webhook="http://192.168.43.157:1880/getimage?url=";
+    private static final String image_webhook = "http://192.168.43.157:1880/getimage?url=";
     private static final int TYPING_TIMER_LENGTH = 600;
     private RecyclerView mMessagesView;
     private EditText mInputMessageView;
@@ -77,32 +75,8 @@ public class GroupFragment extends Fragment {
     private String mUsername;
     private Date timestamp;
     private Socket mSocket;
-    private int REQUEST_OPEN_GALLARY=1;
+    private int REQUEST_OPEN_GALLARY = 1;
     private Boolean isConnected = true;
-    private Emitter.Listener onConnect = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if(!isConnected) {
-                        if(null!=mUsername && null !=mRoomid) {
-                            JSONObject data = new JSONObject();
-                            try {
-                                data.put("username", mUsername);
-                                data.put("room", mRoomid);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                            mSocket.emit("Group join_room", data);
-                        }
-                        Snackbar.make(getActivity().findViewById(R.id.group_fragment),R.string.connect,Snackbar.LENGTH_SHORT).show();
-                        isConnected = true;
-                    }
-                }
-            });
-        }
-    };
     private Emitter.Listener onDisconnect = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
@@ -111,7 +85,7 @@ public class GroupFragment extends Fragment {
                 public void run() {
                     Log.i(TAG, "diconnected");
                     isConnected = false;
-                    Snackbar.make(getActivity().findViewById(R.id.group_fragment),R.string.disconnect,Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(getActivity().findViewById(R.id.group_fragment), R.string.disconnect, Snackbar.LENGTH_SHORT).show();
 
                 }
             });
@@ -124,7 +98,7 @@ public class GroupFragment extends Fragment {
                 @Override
                 public void run() {
                     Log.e(TAG, "Error connecting");
-                    Snackbar.make(getActivity().findViewById(R.id.group_fragment),R.string.error_connect,Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(getActivity().findViewById(R.id.group_fragment), R.string.error_connect, Snackbar.LENGTH_SHORT).show();
 
 
                 }
@@ -145,19 +119,19 @@ public class GroupFragment extends Fragment {
                     try {
                         JSONObject jsonObject = data.getJSONObject("message");
 
-                        if(jsonObject.getString("type").equals("text")){
+                        if (jsonObject.getString("type").equals("text")) {
                             username = data.getString("username");
                             message = jsonObject.getString("message");
 
                             removeTyping(username);
-                            Log.i("check",jsonObject.getString("timestamp").toString());
-                            timestamp= stringToDate(jsonObject.getString("timestamp"));
-                            addMessage(username, message,1,timestamp);
+                            Log.i("check", jsonObject.getString("timestamp").toString());
+                            timestamp = stringToDate(jsonObject.getString("timestamp"));
+                            addMessage(username, message, 1, timestamp);
                         } else {
                             imageText = jsonObject.getString("message");
                             username = data.getString("username");
-                            timestamp= stringToDate(jsonObject.getString("timestamp"));
-                            addImage(username,Uri.parse(image_webhook+imageText),4,2,timestamp);
+                            timestamp = stringToDate(jsonObject.getString("timestamp"));
+                            addImage(username, Uri.parse(image_webhook + imageText), 4, 2, timestamp);
 
                         }
                     } catch (JSONException e) {
@@ -186,8 +160,8 @@ public class GroupFragment extends Fragment {
                         return;
                     }
 
-                    addLog(getResources().getString(R.string.message_user_joined, status),0);
-                    addParticipantsLog(numUsers,0);
+                    addLog(getResources().getString(R.string.message_user_joined, status), 0);
+                    addParticipantsLog(numUsers, 0);
                 }
             });
         }
@@ -202,13 +176,13 @@ public class GroupFragment extends Fragment {
                     String username;
                     try {
                         username = data.getString("username");
-                        Log.d("left", "call: "+username);
+                        Log.d("left", "call: " + username);
                     } catch (JSONException e) {
                         Log.e(TAG, e.getMessage());
                         return;
                     }
 
-                    addLog(getResources().getString(R.string.message_user_left, username),1);
+                    addLog(getResources().getString(R.string.message_user_left, username), 1);
                     removeTyping(username);
                 }
             });
@@ -228,7 +202,7 @@ public class GroupFragment extends Fragment {
                         Log.e(TAG, e.getMessage());
                         return;
                     }
-                    addTyping(username,1);
+                    addTyping(username, 1);
                 }
             });
         }
@@ -264,6 +238,30 @@ public class GroupFragment extends Fragment {
     private Uri mCurrentPhotoPath;
     private String mCurrentPhotoAbsoulutePath;
     private String mRoomid;
+    private Emitter.Listener onConnect = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (!isConnected) {
+                        if (null != mUsername && null != mRoomid) {
+                            JSONObject data = new JSONObject();
+                            try {
+                                data.put("username", mUsername);
+                                data.put("room", mRoomid);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            mSocket.emit("Group join_room", data);
+                        }
+                        Snackbar.make(getActivity().findViewById(R.id.group_fragment), R.string.connect, Snackbar.LENGTH_SHORT).show();
+                        isConnected = true;
+                    }
+                }
+            });
+        }
+    };
 
     public GroupFragment() {
         super();
@@ -276,7 +274,7 @@ public class GroupFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         mAdapter = new MessageAdapterGroup(context, mMessages);
-        if (context instanceof Activity){
+        if (context instanceof Activity) {
             //this.listener = (MainActivity) context;
         }
     }
@@ -289,8 +287,8 @@ public class GroupFragment extends Fragment {
         Fresco.initialize(getContext());
         ChatApplication app = (ChatApplication) getActivity().getApplication();
         mSocket = app.getSocket();
-        mSocket.on(Socket.EVENT_CONNECT,onConnect);
-        mSocket.on(Socket.EVENT_DISCONNECT,onDisconnect);
+        mSocket.on(Socket.EVENT_CONNECT, onConnect);
+        mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
         mSocket.on(Socket.EVENT_CONNECT_ERROR, onConnectError);
         mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
         mSocket.on("Group new message", onNewMessage);
@@ -381,22 +379,22 @@ public class GroupFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.i("asdf", Activity.RESULT_OK+" "+requestCode+" "+resultCode);
+        Log.i("asdf", Activity.RESULT_OK + " " + requestCode + " " + resultCode);
         if (Activity.RESULT_OK != resultCode) {
-            Log.i("asdf","in");
+            Log.i("asdf", "in");
             getActivity().finish();
             return;
-        }else {
+        } else {
             //Intent Switch from main to chat screen
-            if(requestCode == 0) {
-                Log.i("fragment in","in");
+            if (requestCode == 0) {
+                Log.i("fragment in", "in");
                 mRoomid = data.getStringExtra("room_id");
                 mUsername = data.getStringExtra("username");
-                ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(mRoomid );
+                ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(mRoomid);
             }
             //Gallery result
-            else if(requestCode == 1){
-                Log.i("gallery",data.toString());
+            else if (requestCode == 1) {
+                Log.i("gallery", data.toString());
                 Uri selectedImage = data.getData();
                 Bitmap bitmap = null;
                 try {
@@ -404,11 +402,11 @@ public class GroupFragment extends Fragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                Log.i("galleryImagePath",":"+selectedImage.toString());
-                sendImage(bitmap,selectedImage,3,0);
+                Log.i("galleryImagePath", ":" + selectedImage.toString());
+                sendImage(bitmap, selectedImage, 3, 0);
             }
             //Camera result
-            else{
+            else {
                 ParcelFileDescriptor parcelFileDescriptor = null;
                 try {
                     parcelFileDescriptor = getActivity().getContentResolver().openFileDescriptor(mCurrentPhotoPath, "r");
@@ -416,54 +414,55 @@ public class GroupFragment extends Fragment {
                     e.printStackTrace();
                 }
                 FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-                sendImage(BitmapFactory.decodeFileDescriptor(fileDescriptor),mCurrentPhotoPath,3,1);
+                sendImage(BitmapFactory.decodeFileDescriptor(fileDescriptor), mCurrentPhotoPath, 3, 1);
             }
         }
     }
-    public void sendImage(Bitmap bmp, Uri uri, int trans_type, int source_type)
-    {
-        timestamp=new Date();
+
+    public void sendImage(Bitmap bmp, Uri uri, int trans_type, int source_type) {
+        timestamp = new Date();
         JSONObject sendData = new JSONObject();
-        try{
-            sendData.put("type","image");
+        try {
+            sendData.put("type", "image");
             sendData.put("message", encodeImage(bmp));
-            sendData.put("timestamp",timestamp);
-            addImage(mUsername,uri,trans_type,source_type,timestamp);
-            mSocket.emit("Group new message",sendData);
-        }catch(JSONException e){
+            sendData.put("timestamp", timestamp);
+            addImage(mUsername, uri, trans_type, source_type, timestamp);
+            mSocket.emit("Group new message", sendData);
+        } catch (JSONException e) {
 
         }
     }
+
     private void galleryAddPic(Uri contentUri) {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         mediaScanIntent.setData(contentUri);
         getContext().sendBroadcast(mediaScanIntent);
     }
-    private void addImage(String username, Uri uri, int trans_type, int source_type,Date timestamp){
 
-        Log.i("ankit",uri.toString());
-        if(trans_type==3)
+    private void addImage(String username, Uri uri, int trans_type, int source_type, Date timestamp) {
+
+        Log.i("ankit", uri.toString());
+        if (trans_type == 3)
             mMessages.add(new Message.Builder(Message.TYPE_MESSAGE_IMAGE_SENDER).username(username).timestamp(timestamp).image(uri).build());
-        else if(trans_type==4)
+        else if (trans_type == 4)
             mMessages.add(new Message.Builder(Message.TYPE_MESSAGE_IMAGE_RECEIVER).username(username).timestamp(timestamp).image(uri).build());
-        mAdapter = new MessageAdapterGroup(getContext(),mMessages);
+        mAdapter = new MessageAdapterGroup(getContext(), mMessages);
         mAdapter.notifyItemInserted(0);
         galleryAddPic(uri);
         scrollToBottom();
     }
-    private String encodeImage(Bitmap bitmap)
-    {
+
+    private String encodeImage(Bitmap bitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG,70,baos);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos);
         byte[] b = baos.toByteArray();
         String encImage = Base64.encodeToString(b, Base64.DEFAULT);
         return encImage;
     }
 
-    private Bitmap decodeImage(String data)
-    {
+    private Bitmap decodeImage(String data) {
         byte[] b = Base64.decode(data, Base64.DEFAULT);
-        Bitmap bmp = BitmapFactory.decodeByteArray(b,0,b.length);
+        Bitmap bmp = BitmapFactory.decodeByteArray(b, 0, b.length);
         return bmp;
     }
 
@@ -480,13 +479,13 @@ public class GroupFragment extends Fragment {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        switch(id){
+        switch (id) {
             case R.id.action_attach:
-                Log.d("onOptionsItemSelected","action_attach");
+                Log.d("onOptionsItemSelected", "action_attach");
                 openGallery();
                 return true;
             case R.id.action_capture:
-                Log.d("onOptionsItemSelected","action_capture");
+                Log.d("onOptionsItemSelected", "action_capture");
                 openCamera();
                 return true;
             default:
@@ -506,24 +505,23 @@ public class GroupFragment extends Fragment {
                 photoFile = createImageFile(0);
             } catch (IOException ex) {
                 // Error occurred while creating the File
-                Log.i("File Creation Error!",ex.getMessage());
+                Log.i("File Creation Error!", ex.getMessage());
             }
             if (photoFile != null) {
                 Uri photoURI = FileProvider.getUriForFile(getContext(),
                         "com.company.my.chatapp",
                         photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                if ( Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP ) {
-                    takePictureIntent.setClipData( ClipData.newRawUri( "", photoURI ) );
-                    takePictureIntent.addFlags( Intent.FLAG_GRANT_WRITE_URI_PERMISSION| Intent.FLAG_GRANT_READ_URI_PERMISSION );
+                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
+                    takePictureIntent.setClipData(ClipData.newRawUri("", photoURI));
+                    takePictureIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 }
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
             }
         }
     }
 
-    private void openGallery()
-    {
+    private void openGallery() {
         Intent galleryintent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(galleryintent, REQUEST_OPEN_GALLARY);
     }
@@ -532,11 +530,11 @@ public class GroupFragment extends Fragment {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir=null;
-        if(Folder_saveImageType==0)
-            storageDir  =  getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES+"/sent");
+        File storageDir = null;
+        if (Folder_saveImageType == 0)
+            storageDir = getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/sent");
         else
-            storageDir =  getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES+"/received");
+            storageDir = getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/received");
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
                 ".jpg",         /* suffix */
@@ -545,9 +543,10 @@ public class GroupFragment extends Fragment {
 
         // Save a file: path for use with ACTION_VIEW intents
         mCurrentPhotoAbsoulutePath = image.getAbsolutePath();
-        mCurrentPhotoPath= Uri.fromFile(image);
+        mCurrentPhotoPath = Uri.fromFile(image);
         return image;
     }
+
     private void addLog(String message, int trans_type) {
         mMessages.add(new Message.Builder(Message.TYPE_LOG)
                 .message(message).build());
@@ -555,16 +554,16 @@ public class GroupFragment extends Fragment {
         scrollToBottom();
     }
 
-    private void addParticipantsLog(int numUsers,int trans_type) {
-        addLog(getResources().getQuantityString(R.plurals.message_participants, numUsers, numUsers),trans_type);
+    private void addParticipantsLog(int numUsers, int trans_type) {
+        addLog(getResources().getQuantityString(R.plurals.message_participants, numUsers, numUsers), trans_type);
     }
 
-    private void addMessage(String username, String message, int trans_type,Date timestamp) {
-        Log.i("Transtype_inFragment","x"+trans_type);
-        if(trans_type==0)
+    private void addMessage(String username, String message, int trans_type, Date timestamp) {
+        Log.i("Transtype_inFragment", "x" + trans_type);
+        if (trans_type == 0)
             mMessages.add(new Message.Builder(Message.TYPE_MESSAGE_SENDER)
                     .username(username).message(message).timestamp(timestamp).build());
-        else if(trans_type==1){
+        else if (trans_type == 1) {
             mMessages.add(new Message.Builder(Message.TYPE_MESSAGE_RECEIVER)
                     .username(username).message(message).timestamp(timestamp).build());
         }
@@ -602,13 +601,13 @@ public class GroupFragment extends Fragment {
         }
 
         mInputMessageView.setText("");
-        timestamp= new Date();
-        addMessage(mUsername, message,0,timestamp);
+        timestamp = new Date();
+        addMessage(mUsername, message, 0, timestamp);
         JSONObject sendData = new JSONObject();
         try {
-            sendData.put("type","text");
-            sendData.put("message",message);
-            sendData.put("timestamp",timestamp);
+            sendData.put("type", "text");
+            sendData.put("message", message);
+            sendData.put("timestamp", timestamp);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -634,7 +633,7 @@ public class GroupFragment extends Fragment {
     }
 
     private Date stringToDate(String aDate) {
-        Date date=null;
+        Date date = null;
         SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd HH:mm:ss 'GMT+05:30' yyyy");
 
         try {

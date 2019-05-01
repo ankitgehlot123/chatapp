@@ -2,17 +2,12 @@ package com.company.my.chatapp.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.Uri;
-import android.os.ParcelFileDescriptor;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.company.my.chatapp.R;
@@ -21,13 +16,10 @@ import com.company.my.chatapp.modal.Message;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.facebook.imagepipeline.common.RotationOptions;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileDescriptor;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Date;
@@ -141,14 +133,14 @@ public class MessageAdapterGroup extends RecyclerView.Adapter<MessageAdapterGrou
 
         private void setPic(Uri uri) {
 
-                ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
-                        .setProgressiveRenderingEnabled(true)
-                        .build();
-                DraweeController controller = Fresco.newDraweeControllerBuilder()
-                        .setImageRequest(request)
-                        .setOldController(mImageView.getController())
-                        .build();
-                mImageView.setController(controller);
+            ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
+                    .setProgressiveRenderingEnabled(true)
+                    .build();
+            DraweeController controller = Fresco.newDraweeControllerBuilder()
+                    .setImageRequest(request)
+                    .setOldController(mImageView.getController())
+                    .build();
+            mImageView.setController(controller);
 
 
            /* Log.i("ANKIT_URL", uri.toString() + "\n" + uri.getEncodedPath());

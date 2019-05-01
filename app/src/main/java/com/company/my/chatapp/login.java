@@ -20,22 +20,17 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.company.my.chatapp.utils.Session;
 import com.company.my.chatapp.utils.utils;
+import com.google.firebase.auth.FirebaseAuth;
 import com.hbb20.CountryCodePicker;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.List;
 
-import static android.support.constraint.Constraints.TAG;
-
 
 public class login extends Activity {
-
+    private static final int PERMISSION_REQUEST_CODE = 1;
     EditText mob_no;
     Button login;
     CheckBox checkbox;
@@ -43,11 +38,11 @@ public class login extends Activity {
     Spinner spinner;
     TextView owner_no;
     String wantPermission = Manifest.permission.READ_PHONE_STATE;
-    private static final int PERMISSION_REQUEST_CODE = 1;
     String phone_n = null;
     CountryCodePicker codePicker;
     com.company.my.chatapp.utils.utils utils = new utils();
-    Session session= new Session(this);
+    Session session = new Session(this);
+    private FirebaseAuth fbAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,21 +51,21 @@ public class login extends Activity {
 
         mob_no = (EditText) findViewById(R.id.mob_no);
         login = (Button) findViewById(R.id.request_otp_button);
+        fbAuth = FirebaseAuth.getInstance();
 
         if (!checkPermission(wantPermission)) {
             requestPermission(wantPermission);
-        }else {
-            Log.e( "Phone number: ","" + getPhone());
+        } else {
+            Log.e("Phone number: ", "" + getPhone());
 
-           if (getPhone() != null)
-           {
+            if (getPhone() != null) {
                 String phoneNumber = getPhone();
                 phoneNumber = phoneNumber.replaceAll("-", "").replaceAll("\\s", "");
                 if (phoneNumber.length() > 10) {
                     phoneNumber = phoneNumber.substring(phoneNumber.length() - 10);
                 }
                 mob_no.setText(phoneNumber);
-           }
+            }
         }
 
         codePicker = (CountryCodePicker) findViewById(R.id.code);
@@ -80,7 +75,7 @@ public class login extends Activity {
             public void onClick(View v) {
                 if (utils.checkConnection(getApplicationContext()) == 1) {
                     if (mob_no.getText().length() != 10)
-                        Snackbar.make(findViewById(R.id.login),"Invalid Mobile Number",Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(findViewById(R.id.login), "Invalid Mobile Number", Snackbar.LENGTH_SHORT).show();
                     else {
                         mob_no_string = codePicker.getSelectedCountryCode() + mob_no.getText().toString();
                         mob_no_string = mob_no_string.replaceAll("-", "").replaceAll("\\s", "");
@@ -98,16 +93,17 @@ public class login extends Activity {
                             @Override
                             public void onSuccess(String result) {
                                 if (result.equals("true")) {
-                                    intent[0] = new Intent(login.this, otp_layout.class);
+                                    intent[0] = new Intent(login.this, otp_layout_1.class);
                                     intent[0].putExtra("mob_no", mob_no_string);
                                     startActivity(intent[0]);
                                     finish();
                                 }
                             }
                         });
+
                     }
                 } else {
-                    Snackbar.make(findViewById(R.id.login),"No Connection",Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(R.id.login), "No Connection", Snackbar.LENGTH_SHORT).show();
                 }
             }
         });
@@ -126,39 +122,41 @@ public class login extends Activity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
             List<SubscriptionInfo> subscription = SubscriptionManager.from(getApplicationContext()).getActiveSubscriptionInfoList();
-                SubscriptionInfo info = subscription.get(0);
-                phone_n=info.getNumber();
+            SubscriptionInfo info = subscription.get(0);
+            phone_n = info.getNumber();
             return phone_n;
         } else {
             TelephonyManager phoneMgr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
             if (ActivityCompat.checkSelfPermission(this, wantPermission) != PackageManager.PERMISSION_GRANTED) {
-                phone_n="";
-                Log.i("code123",phoneMgr.getNetworkCountryIso());
+                phone_n = "";
+                Log.i("code123", phoneMgr.getNetworkCountryIso());
                 return phone_n;
             }
-            phone_n=phoneMgr != null ? phoneMgr.getLine1Number() : "";
+            phone_n = phoneMgr != null ? phoneMgr.getLine1Number() : "";
             return phone_n;
         }
 
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case PERMISSION_REQUEST_CODE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.e( "Phone number: " ,""+getPhone());
+                    Log.e("Phone number: ", "" + getPhone());
 
-                    if(getPhone() != null){
+                    if (getPhone() != null) {
                         String phoneNumber = getPhone();
-                    phoneNumber = phoneNumber.replaceAll("-", "").replaceAll("\\s", "");
-                    if (phoneNumber.length() > 10) {
-                        phoneNumber = phoneNumber.substring(phoneNumber.length() - 10);
-                    }
-                    mob_no.setText(phoneNumber);
-                } else {
-                    Snackbar.make(findViewById(R.id.login),"Permission Denied. We can't get phone number.",Snackbar.LENGTH_SHORT).show();
+                        phoneNumber = phoneNumber.replaceAll("-", "").replaceAll("\\s", "");
+                        if (phoneNumber.length() > 10) {
+                            phoneNumber = phoneNumber.substring(phoneNumber.length() - 10);
+                        }
+                        mob_no.setText(phoneNumber);
+                    } else {
+                        Snackbar.make(findViewById(R.id.login), "Permission Denied. We can't get phone number.", Snackbar.LENGTH_SHORT).show();
 
-                }}
+                    }
+                }
                 break;
         }
     }
@@ -178,7 +176,7 @@ public class login extends Activity {
 
     private void requestPermission(String permission) {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
-            Snackbar.make(findViewById(R.id.login),"Phone state permission allows us to get phone number. Please allow it for additional functionality.",Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(findViewById(R.id.login), "Phone state permission allows us to get phone number. Please allow it for additional functionality.", Snackbar.LENGTH_SHORT).show();
         }
         ActivityCompat.requestPermissions(this, new String[]{permission}, PERMISSION_REQUEST_CODE);
     }

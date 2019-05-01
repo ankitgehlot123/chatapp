@@ -19,7 +19,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.company.my.chatapp.utils.Session;
 import com.company.my.chatapp.utils.utils;
@@ -29,7 +28,6 @@ import org.apache.http.NameValuePair;
 import java.util.List;
 
 public class otp_layout extends Activity {
-    private Session session= new Session(this);
     private static final int REQUEST_CODE = 1;
     EditText ed_otp, ed_otp1, ed_otp2, ed_otp3;
     Button otp_button;
@@ -38,6 +36,7 @@ public class otp_layout extends Activity {
     List<NameValuePair> params;
     ProgressDialog progressDialog;
     com.company.my.chatapp.utils.utils utils = new utils();
+    private Session session = new Session(this);
     private BroadcastReceiver receiver;
 
     @Override
@@ -46,7 +45,7 @@ public class otp_layout extends Activity {
         setContentView(R.layout.activity_otp_layout);
         //otp = (EditText)findViewById(R.id.otp);
 
-        resend_otp = (TextView) findViewById(R.id.resend_otp);
+        resend_otp = findViewById(R.id.resend_otp);
 
         ed_otp = findViewById(R.id.ed_otp);
         ed_otp1 = findViewById(R.id.ed_otp1);
@@ -104,7 +103,7 @@ public class otp_layout extends Activity {
             });
         } else
 
-        Snackbar.make(findViewById(R.id.otp_parent) ,"No Connection", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(findViewById(R.id.otp_parent), "No Connection", Snackbar.LENGTH_SHORT).show();
     }
 
     @Override
@@ -115,7 +114,7 @@ public class otp_layout extends Activity {
                 fetchOtp();
             } else {
 
-                Snackbar.make(findViewById(R.id.otp_parent) ,"You denied the permission", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(findViewById(R.id.otp_parent), "You denied the permission", Snackbar.LENGTH_SHORT).show();
             }
         }
     }
@@ -247,7 +246,7 @@ public class otp_layout extends Activity {
             });
         } else {
 
-            Snackbar.make(findViewById(R.id.otp_parent) ,"No Connection", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(findViewById(R.id.otp_parent), "No Connection", Snackbar.LENGTH_SHORT).show();
         }
     }
 

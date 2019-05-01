@@ -11,26 +11,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
-import org.json.JSONObject;
-
 public class chat_base extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 1;
-    String mob_no,username;
+    String mob_no, username;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_base);
-     
+
         if (!checkPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE))
             requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        else{
+        else {
             Intent intent = getIntent();
             Bundle bundle = new Bundle();
-            if(intent.getBooleanExtra("is_push",false) == true)
-            {
-                bundle.putBoolean("is_push",true);
-                bundle.putString("data",intent.getStringExtra("data"));
+            if (intent.getBooleanExtra("is_push", false) == true) {
+                bundle.putBoolean("is_push", true);
+                bundle.putString("data", intent.getStringExtra("data"));
             }
             mob_no = intent.getStringExtra("mob_no");
             username = intent.getStringExtra("username");
@@ -45,14 +43,16 @@ public class chat_base extends AppCompatActivity {
             //THEN NOW SHOW OUR FRAGMENT
             getSupportFragmentManager().beginTransaction().replace(R.id.container, mainFragment).commit();
         }
-       
+
     }
+
     private void requestPermission(String permission) {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
             Toast.makeText(this, "Phone Storage Permission is required for storing media. Please allow it for additional functionality.", Toast.LENGTH_LONG).show();
         }
         ActivityCompat.requestPermissions(this, new String[]{permission}, PERMISSION_REQUEST_CODE);
     }
+
     private boolean checkPermission(String permission) {
         if (Build.VERSION.SDK_INT >= 23) {
             int result = ActivityCompat.checkSelfPermission(this, permission);
@@ -65,6 +65,7 @@ public class chat_base extends AppCompatActivity {
             return true;
         }
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
@@ -72,10 +73,9 @@ public class chat_base extends AppCompatActivity {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Intent intent = getIntent();
                     Bundle bundle = new Bundle();
-                    if(intent.getBooleanExtra("is_push",false) == true)
-                    {
-                        bundle.putBoolean("is_push",true);
-                        bundle.putString("data",intent.getStringExtra("data"));
+                    if (intent.getBooleanExtra("is_push", false) == true) {
+                        bundle.putBoolean("is_push", true);
+                        bundle.putString("data", intent.getStringExtra("data"));
                     }
                     mob_no = intent.getStringExtra("mob_no");
                     username = intent.getStringExtra("username");

@@ -1,9 +1,6 @@
 package com.company.my.chatapp;
 
 import android.app.Application;
-import android.os.Bundle;
-
-import com.facebook.drawee.backends.pipeline.Fresco;
 
 import java.net.URISyntaxException;
 
@@ -22,6 +19,7 @@ public class ChatApplication extends Application {
             throw new RuntimeException(e);
         }
     }
+
     public Socket getSocket() {
         return mSocket;
     }

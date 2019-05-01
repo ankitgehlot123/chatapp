@@ -87,9 +87,9 @@ public class contactList extends AppCompatActivity {
 
     }
 
-    public void refresh(View view){
-        Intent intent = new Intent(this,contactListUpdate.class);
-        intent.putExtra("source",1);
+    public void refresh(View view) {
+        Intent intent = new Intent(this, contactListUpdate.class);
+        intent.putExtra("source", 1);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         //finish();

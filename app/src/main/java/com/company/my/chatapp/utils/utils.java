@@ -13,8 +13,6 @@ import android.widget.Toast;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.company.my.chatapp.contactListUpdate;
@@ -124,9 +122,9 @@ public class utils extends Activity {
                         e.printStackTrace();
                     }
                 }, volleyError -> {
-                    progressDialog.dismiss();
-                    Toast.makeText(context, "Some error occurred" + volleyError, Toast.LENGTH_LONG).show();
-                });
+            progressDialog.dismiss();
+            Toast.makeText(context, "Some error occurred" + volleyError, Toast.LENGTH_LONG).show();
+        });
         // Adding the request to the queue along with a unique string tag
         RequestQueue rQueue = Volley.newRequestQueue(context);
         rQueue.add(request);
@@ -143,6 +141,7 @@ public class utils extends Activity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         //sending mob_no to server
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,
                 url + "login",
@@ -161,9 +160,9 @@ public class utils extends Activity {
                         Toast.makeText(context, "Some error occurred", Toast.LENGTH_LONG).show();
                     }
                 }, volleyError -> {
-                    progressDialog.dismiss();
-                    Toast.makeText(context, "Some error occurred" + volleyError, Toast.LENGTH_LONG).show();
-                });
+            progressDialog.dismiss();
+            Toast.makeText(context, "Some error occurred" + volleyError, Toast.LENGTH_LONG).show();
+        });
         // Adding the request to the queue along with a unique string tag
         RequestQueue rQueue = Volley.newRequestQueue(context);
         rQueue.add(request);
@@ -214,9 +213,9 @@ public class utils extends Activity {
                         e.printStackTrace();
                     }
                 }, volleyError -> {
-                    progressDialog.dismiss();
-                    Toast.makeText(context, "Some error occurred" + volleyError, Toast.LENGTH_LONG).show();
-                });
+            progressDialog.dismiss();
+            Toast.makeText(context, "Some error occurred" + volleyError, Toast.LENGTH_LONG).show();
+        });
         // Adding the request to the queue along with a unique string tag
         RequestQueue rQueue = Volley.newRequestQueue(context);
         rQueue.add(request);
@@ -267,7 +266,7 @@ public class utils extends Activity {
                         }
                         Intent intent = new Intent(context, contactListUpdate.class);
                         // set the new task and clear flags
-                        intent.putExtra("source",0);
+                        intent.putExtra("source", 0);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         context.startActivity(intent);
                         finish();
@@ -296,4 +295,5 @@ public class utils extends Activity {
     public interface VolleyCallbackJSONArray {
         void onSuccess(JSONArray result);
     }
+
 }

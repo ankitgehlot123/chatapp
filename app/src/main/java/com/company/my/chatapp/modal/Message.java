@@ -42,6 +42,7 @@ public class Message {
     public Uri getImage() {
         return mImage;
     }
+
     public Date getTimestamp() {
         return mtimestamp;
     }
@@ -73,6 +74,7 @@ public class Message {
             mImage = image;
             return this;
         }
+
         public Builder timestamp(Date timestamp) {
             mTimestamp = timestamp;
             return this;

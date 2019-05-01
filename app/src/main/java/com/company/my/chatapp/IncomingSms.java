@@ -32,15 +32,16 @@ public class IncomingSms extends BroadcastReceiver {
                     String phoneNumber = currentMessage.getDisplayOriginatingAddress();
 
                     String senderNum = phoneNumber;
-                    String message = currentMessage.getDisplayMessageBody().split(":")[1];
+                    String message = currentMessage.getDisplayMessageBody().split(" ")[0];
 
                     message = message.substring(0, message.length());
                     Log.i("ANKIT", "" + message);
                     Log.i("SmsReceiver", "senderNum: " + senderNum + "; message: " + message);
-
+                    //if(senderNum.equals("51404")){
                     Intent myIntent = new Intent("otp");
                     myIntent.putExtra("message", message);
                     LocalBroadcastManager.getInstance(context).sendBroadcast(myIntent);
+                    //}
                     // Show Alert
 
                 } // end for loop

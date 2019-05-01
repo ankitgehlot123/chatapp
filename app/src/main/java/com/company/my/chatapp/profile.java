@@ -10,17 +10,15 @@ import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.company.my.chatapp.utils.Session;
 import com.company.my.chatapp.utils.utils;
+import com.google.firebase.auth.FirebaseAuth;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -38,6 +36,7 @@ public class profile extends AppCompatActivity {
     String imageString = null;
     Bitmap bitmap = null;
     ProgressDialog progressDialog;
+    FirebaseAuth fbAuth;
     com.company.my.chatapp.utils.utils utils = new utils();
 
     @Override
@@ -45,6 +44,7 @@ public class profile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         //int source=getIntent().getIntExtra("source",0);
+        fbAuth = FirebaseAuth.getInstance();
 
         image = findViewById(R.id.profile_pic);
         user_name = findViewById(R.id.user_name);
@@ -66,22 +66,22 @@ public class profile extends AppCompatActivity {
 
     private void setup_name_pic(int source) {
         if (session.getUsername() != "") {
-            if(source==1)
+            if (source == 1)
                 user_name.setText(user_name_text);
             else
                 user_name.setText(session.getUsername());
         }
         if (session.getProfilePic() != "") {
-            if(source==1){
+            if (source == 1) {
                 byte[] decodedString = Base64.decode(imageString, Base64.DEFAULT);
                 Bitmap decodeByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                decodeByte.compress(Bitmap.CompressFormat.JPEG,70,baos);
+                decodeByte.compress(Bitmap.CompressFormat.JPEG, 70, baos);
                 byte[] b = baos.toByteArray();
                 decodedString = Base64.decode(b, Base64.DEFAULT);
                 decodeByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
                 image.setImageBitmap(decodeByte);
-            }else{
+            } else {
                 byte[] decodedString = Base64.decode(session.getProfilePic(), Base64.DEFAULT);
                 Bitmap decodeByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
                 image.setImageBitmap(decodeByte);
@@ -144,7 +144,7 @@ public class profile extends AppCompatActivity {
                 postparams.put("id", session.getUserId());
                 postparams.put("mob_no", session.getMob_no());
                 postparams.put("username", user_name.getText());
-                postparams.put("regisToken",session.getRegisToken());
+                postparams.put("regisToken", session.getRegisToken());
                 if (imageString != null) {
                     postparams.put("pic", imageString);
                 }
@@ -162,9 +162,11 @@ public class profile extends AppCompatActivity {
 
         }
     }
-    public void logout(View view){
+
+    public void logout(View view) {
 
         utils.clearShared(this);
+        fbAuth.signOut();
         getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isFirstRun", true).apply();
         Intent intent = new Intent(this, login.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

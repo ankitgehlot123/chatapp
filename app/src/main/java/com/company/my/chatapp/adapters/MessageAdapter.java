@@ -2,33 +2,24 @@ package com.company.my.chatapp.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.ParcelFileDescriptor;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.company.my.chatapp.R;
 import com.company.my.chatapp.imageFullscreen;
 import com.company.my.chatapp.modal.Message;
-
-import java.io.ByteArrayOutputStream;
-
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.facebook.imagepipeline.common.RotationOptions;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 
-import java.io.FileDescriptor;
-import java.io.FileNotFoundException;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Date;
@@ -52,11 +43,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         int layout = -1;
         switch (viewType) {
             case Message.TYPE_MESSAGE_SENDER:
-                    layout = R.layout.item_message_sender;
+                layout = R.layout.item_message_sender;
                 Log.i("Ankitlayout", "R.layout.item_message_sender");
                 break;
             case Message.TYPE_MESSAGE_RECEIVER:
-                    layout = R.layout.item_message_receiver;
+                layout = R.layout.item_message_receiver;
                 Log.i("Ankitlayout", "R.layout.item_message_receiver");
                 break;
             case Message.TYPE_MESSAGE_IMAGE_SENDER:
@@ -88,7 +79,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         viewHolder.setMessage(message.getMessage());
         viewHolder.setUsername(message.getUsername());
         try {
-              viewHolder.setImage(message.getImage());
+            viewHolder.setImage(message.getImage());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -145,14 +136,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
                     .setProgressiveRenderingEnabled(true)
                     .build();
-                DraweeController controller = Fresco.newDraweeControllerBuilder()
-                        .setImageRequest(request)
-                        .setOldController(mImageView.getController())
-                        .build();
-                mImageView.setController(controller);
+            DraweeController controller = Fresco.newDraweeControllerBuilder()
+                    .setImageRequest(request)
+                    .setOldController(mImageView.getController())
+                    .build();
+            mImageView.setController(controller);
 
 
-           // mImageView.setImageURI(uri);
+            // mImageView.setImageURI(uri);
             // Get the dimensions of the View
 
           /*

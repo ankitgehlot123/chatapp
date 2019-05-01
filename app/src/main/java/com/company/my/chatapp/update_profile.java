@@ -10,12 +10,10 @@ import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.company.my.chatapp.utils.Session;
 import com.company.my.chatapp.utils.utils;
@@ -41,7 +39,7 @@ public class update_profile extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_profile);
-        getIntent().getIntExtra("source",0);
+        getIntent().getIntExtra("source", 0);
         image = (ImageView) findViewById(R.id.profile_pic);
         user_name = (EditText) findViewById(R.id.user_name);
         update = (Button) findViewById(R.id.update);
@@ -115,7 +113,7 @@ public class update_profile extends AppCompatActivity {
                 postparams.put("id", session.getUserId());
                 postparams.put("mob_no", session.getMob_no());
                 postparams.put("username", user_name.getText());
-                postparams.put("regisToken",session.getRegisToken());
+                postparams.put("regisToken", session.getRegisToken());
                 if (imageString != null) {
                     postparams.put("pic", imageString);
                 }
