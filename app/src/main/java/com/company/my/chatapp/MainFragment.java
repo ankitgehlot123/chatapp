@@ -813,7 +813,7 @@ public class MainFragment extends Fragment {
         Document set = new Document().append("$set", date);
 
 
-        Document updateFilter = new Document().append("mob_no", "+" + m_receiver);
+        Document updateFilter = new Document().append("mob_no",m_receiver);
         utils.contactListCollection.updateOne(updateFilter, set);
     }
 }

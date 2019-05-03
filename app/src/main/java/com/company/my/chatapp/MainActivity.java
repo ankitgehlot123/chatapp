@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         Iterator<Document> iterator = cursor.iterator();
         Log.d("Check111", "" + iterator.hasNext());
         while (iterator.hasNext()) {
-
+            try {
             Log.d("Check111", iterator.next().toJson());
             Document document = iterator.next();
             //document.remove("_id");
@@ -98,6 +98,10 @@ public class MainActivity extends AppCompatActivity {
             JSONObject obj = new JSONObject(map);
             Log.d("Check111", obj.toString());
             list.put(obj);
+            }catch(Exception e)
+            {
+                Log.e("MongoDB-Error:",e.toString());
+            }
         }
         for (int i = 0; i < list.length(); i++) {
             try {
