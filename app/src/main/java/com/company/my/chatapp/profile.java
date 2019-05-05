@@ -10,12 +10,18 @@ import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.company.my.chatapp.utils.Session;
 import com.company.my.chatapp.utils.utils;
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,6 +32,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+
 
 public class profile extends AppCompatActivity {
     Session session = new Session(profile.this);
@@ -125,7 +132,7 @@ public class profile extends AppCompatActivity {
     public void update(View v) {
         if (utils.checkConnection(getApplicationContext()) == 1) {
             progressDialog = new ProgressDialog(profile.this);
-            progressDialog.setMessage("Uploading, please wait...");
+            progressDialog.setMessage("Updating Profile, please wait...");
             progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.show();
             Intent prevIntent = getIntent();
@@ -145,6 +152,7 @@ public class profile extends AppCompatActivity {
                 postparams.put("mob_no", session.getMob_no());
                 postparams.put("username", user_name.getText());
                 postparams.put("regisToken", session.getRegisToken());
+                Log.wtf("regisToken",session.getRegisToken());
                 if (imageString != null) {
                     postparams.put("pic", imageString);
                 }
@@ -164,7 +172,15 @@ public class profile extends AppCompatActivity {
     }
 
     public void logout(View view) {
-
+        if (utils.checkConnection(getApplicationContext()) == 1) {
+                progressDialog = new ProgressDialog(profile.this);
+                progressDialog.setMessage("Logging Out..");
+                progressDialog.setCanceledOnTouchOutside(false);
+                progressDialog.show();
+               utils.logout(profile.this, session.getMob_no(), progressDialog);
+        } else {
+            Snackbar.make(findViewById(R.id.login), "No Connection", Snackbar.LENGTH_SHORT).show();
+        }
         utils.clearShared(this);
         fbAuth.signOut();
         getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isFirstRun", true).apply();

@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -33,8 +34,8 @@ import java.util.ArrayList;
 
 public class utils extends Activity {
 
-    static public String url = "http://192.168.43.157:1880/";
-    static public String profile_url = "http://192.168.43.157:1880/ChatApp?pic=";
+    static public String url = "http://192.168.43.81:1880/";
+    static public String profile_url = "http://192.168.43.81:1880/ChatApp?pic=";
 
     // Create the default Stitch Client
     static public StitchAppClient client = Stitch.getAppClient("chatapp-acbgk");
@@ -64,8 +65,12 @@ public class utils extends Activity {
     public static void clearShared(Context context) {
         SharedPreferences prefs = PreferenceManager
                 .getDefaultSharedPreferences(context);
+        String regisToken= prefs.getString("regisToken", "");
+        Log.e("tokatoka","xx"+regisToken);
         SharedPreferences.Editor editor = prefs.edit();
         editor.clear();
+        editor.commit();
+        editor.putString("regisToken", regisToken);
         editor.commit();
     }
 
@@ -170,7 +175,31 @@ public class utils extends Activity {
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
     }
+    public void logout(final Context context, final String mob_no_string, final ProgressDialog progressDialog) {
+        JSONObject postparams = new JSONObject();
+        try {
+            postparams.put("mob_no", mob_no_string);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
+        //sending mob_no to server
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,
+                url + "logout",
+                postparams,
+                res -> {
+                    progressDialog.dismiss();
+                }, volleyError -> {
+            progressDialog.dismiss();
+            Toast.makeText(context, "Some error occurred" + volleyError, Toast.LENGTH_LONG).show();
+        });
+        // Adding the request to the queue along with a unique string tag
+        RequestQueue rQueue = Volley.newRequestQueue(context);
+        rQueue.add(request);
+        request.setRetryPolicy(new DefaultRetryPolicy(15000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+    }
     public void auth(final Context context, final String mobtext, final String otptext, final ProgressDialog progressDialog,
                      final VolleyCallback callback) {
 
@@ -222,21 +251,6 @@ public class utils extends Activity {
         request.setRetryPolicy(new DefaultRetryPolicy(15000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-    }
-
-    //Authentication
-
-    public void logout(Context context) {
-        //Clear all the Session Values
-        final Session session = new Session(context);
-        session.ClearSession();
-        utils.clearShared(context);
-        getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isFirstRun", true).apply();
-        Intent intent = new Intent(context, login.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        context.startActivity(intent);
-        finish();
-        Toast.makeText(context, "Logged Out Successfully", Toast.LENGTH_SHORT).show();
     }
 
     public void update_profile(final Context context, final JSONObject postparams, final ProgressDialog progressDialog) {

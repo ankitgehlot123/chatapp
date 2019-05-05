@@ -812,7 +812,7 @@ public class MainFragment extends Fragment {
         Document date = new Document().append("timestamp", now);
         Document set = new Document().append("$set", date);
 
-
+        Log.i("check2",m_receiver);
         Document updateFilter = new Document().append("mob_no",m_receiver);
         utils.contactListCollection.updateOne(updateFilter, set);
     }

@@ -14,7 +14,9 @@ import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -93,7 +95,7 @@ public class login extends Activity {
                             @Override
                             public void onSuccess(String result) {
                                 if (result.equals("true")) {
-                                    intent[0] = new Intent(login.this, otp_layout_1.class);
+                                    intent[0] = new Intent(login.this, otp_layout.class);
                                     intent[0].putExtra("mob_no", mob_no_string);
                                     startActivity(intent[0]);
                                     finish();
@@ -107,6 +109,8 @@ public class login extends Activity {
                 }
             }
         });
+
+
     }
 
     //Enable login button when Cheeckbox is Checked

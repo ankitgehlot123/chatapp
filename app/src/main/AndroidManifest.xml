@@ -47,9 +47,6 @@
             android:name=".otp_layout" />
         <activity
             android:screenOrientation="portrait"
-            android:name=".otp_layout_1" />
-        <activity
-            android:screenOrientation="portrait"
             android:name=".login" />
 
         <activity

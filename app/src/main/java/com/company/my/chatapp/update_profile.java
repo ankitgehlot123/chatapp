@@ -10,6 +10,7 @@ import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -94,7 +95,7 @@ public class update_profile extends AppCompatActivity {
     public void update(View v) {
         if (utils.checkConnection(getApplicationContext()) == 1) {
             progressDialog = new ProgressDialog(update_profile.this);
-            progressDialog.setMessage("Uploading, please wait...");
+            progressDialog.setMessage("Updating Profile, please wait...");
             progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.show();
             Intent prevIntent = getIntent();
@@ -114,6 +115,7 @@ public class update_profile extends AppCompatActivity {
                 postparams.put("mob_no", session.getMob_no());
                 postparams.put("username", user_name.getText());
                 postparams.put("regisToken", session.getRegisToken());
+                Log.e("RegisTokk","xx"+session.getRegisToken());
                 if (imageString != null) {
                     postparams.put("pic", imageString);
                 }

@@ -2,12 +2,12 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/otp_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/backdrop_login"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:id="@+id/otp_parent"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -49,61 +49,116 @@
 
         <EditText
             android:id="@+id/ed_otp"
-            android:layout_width="wrap_content"
+            android:layout_width="40dp"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:autofillHints="-"
             android:background="@android:color/transparent"
+            android:focusable="auto"
+            android:focusableInTouchMode="true"
+            android:hapticFeedbackEnabled="true"
             android:hint="@string/otp_hint"
             android:inputType="number"
             android:maxLength="1"
-            android:textAlignment="center"
             android:singleLine="true"
+            android:textAlignment="center"
             android:textColor="@color/colorWhite"
             android:textSize="@android:dimen/app_icon_size" />
 
         <EditText
             android:id="@+id/ed_otp1"
-            android:layout_width="wrap_content"
+            android:layout_width="40dp"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:autofillHints=""
-            android:textAlignment="center"
             android:background="@android:color/transparent"
+
+            android:focusable="auto"
+            android:focusableInTouchMode="true"
+            android:hapticFeedbackEnabled="true"
             android:hint="@string/otp_hint"
             android:inputType="number"
             android:maxLength="1"
+
+            android:nextFocusForward="@id/ed_otp2"
             android:singleLine="true"
+            android:textAlignment="center"
             android:textColor="@color/colorWhite"
             android:textSize="@android:dimen/app_icon_size" />
 
         <EditText
             android:id="@+id/ed_otp2"
-            android:layout_width="wrap_content"
+            android:layout_width="40dp"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:autofillHints="-"
             android:background="@android:color/transparent"
+
+            android:focusable="auto"
+            android:focusableInTouchMode="true"
+            android:hapticFeedbackEnabled="true"
             android:hint="@string/otp_hint"
-            android:textAlignment="center"
             android:inputType="number"
             android:maxLength="1"
+
+            android:nextFocusForward="@id/ed_otp3"
             android:singleLine="true"
+            android:textAlignment="center"
             android:textColor="@color/colorWhite"
             android:textSize="@android:dimen/app_icon_size" />
 
         <EditText
             android:id="@+id/ed_otp3"
-            android:textAlignment="center"
-            android:layout_width="wrap_content"
+            android:layout_width="40dp"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:autofillHints="-"
             android:background="@android:color/transparent"
+
+            android:focusable="auto"
+            android:focusableInTouchMode="true"
+            android:hapticFeedbackEnabled="true"
             android:hint="@string/otp_hint"
             android:inputType="number"
             android:maxLength="1"
+
+            android:nextFocusForward="@id/ed_otp4"
             android:singleLine="true"
+            android:textAlignment="center"
+            android:textColor="@color/colorWhite"
+            android:textSize="@android:dimen/app_icon_size" />
+
+        <EditText
+            android:id="@+id/ed_otp4"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+
+            android:background="@android:color/transparent"
+            android:focusable="auto"
+            android:focusableInTouchMode="true"
+            android:hapticFeedbackEnabled="true"
+            android:hint="@string/otp_hint"
+            android:inputType="number"
+            android:maxLength="1"
+
+            android:nextFocusForward="@id/ed_otp5"
+            android:singleLine="true"
+            android:textAlignment="center"
+            android:textColor="@color/colorWhite"
+            android:textSize="@android:dimen/app_icon_size" />
+
+        <EditText
+            android:id="@+id/ed_otp5"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@android:color/transparent"
+            android:focusable="auto"
+            android:focusableInTouchMode="true"
+            android:hapticFeedbackEnabled="true"
+            android:hint="@string/otp_hint"
+            android:inputType="number"
+            android:maxLength="1"
+            android:nextFocusForward="@id/otp_button"
+            android:singleLine="true"
+            android:textAlignment="center"
             android:textColor="@color/colorWhite"
             android:textSize="@android:dimen/app_icon_size" />
     </LinearLayout>

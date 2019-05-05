@@ -88,21 +88,38 @@ public class MainActivity extends AppCompatActivity {
         FindIterable<Document> cursor = utils.contactListCollection.find(filter).sort(sort);
 
         Iterator<Document> iterator = cursor.iterator();
-        Log.d("Check111", "" + iterator.hasNext());
+        //Log.d("Check111", "" + iterator.hasNext());
+        int i=0;
         while (iterator.hasNext()) {
             try {
-            Log.d("Check111", iterator.next().toJson());
+                String pic = null;
+            //Log.d("Check111", iterator.next().toJson());
             Document document = iterator.next();
             //document.remove("_id");
             Map<String, Object> map = new HashMap<>(document);
             JSONObject obj = new JSONObject(map);
             Log.d("Check111", obj.toString());
-            list.put(obj);
+                if (obj.has("pic"))
+                    pic = obj.getString("pic");
+                contactGetSet contact = new contactGetSet(
+                        obj.getString("_id"),
+                        obj.getString("username"),
+                        obj.getString("mob_no"),
+                        pic
+                );
+                Log.d("Check3", obj.getString("mob_no")+"   "+obj.getString("username"));
+                contactList.add(contact);
+            //list.put(obj);
             }catch(Exception e)
             {
                 Log.e("MongoDB-Error:",e.toString());
+            }finally {
+                //Notify adapter about data changes
+                contactListAdapter.notifyItemChanged(i);
+                i++;
             }
         }
+        /*Log.i("check4",list.toString());
         for (int i = 0; i < list.length(); i++) {
             try {
                 String pic = null;
@@ -115,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
                         obj.getString("mob_no"),
                         pic
                 );
+                Log.d("Check3", obj.getString("mob_no")+"   "+obj.getString("username"));
                 contactList.add(contact);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -122,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
                 //Notify adapter about data changes
                 contactListAdapter.notifyItemChanged(i);
             }
-        }
+        }*/
     }
 
     @Override
