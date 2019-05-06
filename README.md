@@ -1,6 +1,6 @@
 # chatapp
-			 ------------------------------------------------------||||||||||||||||||||||----------------------------------------------------------
-								                                                 Server- setup
+
+<h2>Server- setup</h2>
                                             
 -------------------------------------------
 i. Node-Red 
@@ -69,12 +69,8 @@ ii.	MongoDB
 7.Click on CREATE DATABASE and type ChatApp under Database Name and type Users under Collection Name and click on CREATE DATABASE.
 
 8.Open ChatApp database and click on Create Collection and type chat under Collection Name and click on CREATE COLLECTION.
-
-
-                                  
- ------------------------------------------------------||||||||||||||||||||||----------------------------------------------------------
-
-							                                              Client Setup
+                   
+<h2>Client Setup</h2>
 
 --------------------------------------------------------------
 i.Server IP Modification (If Applicable)
